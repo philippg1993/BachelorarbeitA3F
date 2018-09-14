@@ -182,17 +182,17 @@ Cgroup Controller verfügen über verschiedene Ressourcen Verteilungs Modelle. D
 
 ----CPU kann kein Prozent wert zugeteilt werden weil durch eine geringe auslastung die leistung runterfährt (youtube video siehe one noteJérôme Petazzoni )
 
-\paragraph{Gewichtung}
+\paragraph{Weight}
 Die Ressourcen eines Prozesses werden Proportional an alle aktiven Kind Prozesse verteilt. Da nur die aktiven Kind Prozesse welche aktuell Ressourcen benötigen an der Verteilung teilnehmen, werden die zugeteilten Ressourcen effizient genutzt. 
 
 Alle Konfigurationen sind gültig und es gibt keinen Grund, Migrationen von Konfigurationsänderungsprozessen abzulehnen.
 
-\paragraph{Limits}
+\paragraph{Limit}
 Ist ein Max-Limit gesetzt, kann ein Kind Prozess nur bis zu der konfigurierten Menge einer Ressource Verwenden. Limits können auch als soft-Limits bezeichnet werden. Die Summe der Limits aller Kind Prozesse kann die zur Verfügung stehende Menge an Ressourcen des Eltern Prozesses überschreiten. Ein Limit ist sozusagen ein maximaler Richtwert der bei dringendem Bedarf überschritten werden kann. Der Prozess welcher den über das Limit hinaus ragende Anteil verwendet, steht unter erhöhtem Druck und wird gedrängt die Ressource schnell wieder frei zu geben. Wenn eine cgroup die Ressourcen nicht mehr benötigt, wird diese bis zu einem setzbaren Min-Limit freigegeben.
 
 Da Limits überschritten werden können, sind alle Konfigurationen gültig und es gibt keinen Grund Konfigurationsänderungen zurück zu weisen.
 
-\paragraph{Protections}
+\paragraph{Protection}
 Eine cgroup ist so geschützt, dass sie bis zur konfigurierten Menge der Ressource fest zugeordnet werden kann, wenn die Verwendung aller Prozesse unter der geschützten Ebene Liegt. Der Schutz kann garantiert oder effizient sein. Bei garantiertem Schutz wird die Ressource explizit für die cgroup frei gehalten und kann vollständig verwendet werden. Die Effizientere Variante bietet die Möglichkeit zugeteilte Ressourcen auf Anfrage für andere Prozesse frei zu stellen.
 
 Die Protectionen können überschritten werden somit sind alle Konfigurationsmethoden gültig.
@@ -200,13 +200,24 @@ Die Protectionen können überschritten werden somit sind alle Konfigurationsmet
 \paragraph{Allocation}
 Einer cgroup wird eine bestimmte Menge einer Ressource fest zugeteilt und stellt somit ein Hard-Limit dar. Die Summe der Zuweisungen von Kind Prozessen dürfen die Menge der fest zugeteilten Ressource des Eltern Prozesses nicht überschreiten. Auch wenn die Ressource nicht ausgenutzt wird, bleibt diese der cgroup erhalten. 
 
-Es gibt bei Allocationen einige Konfigurationen die zurückgewiesen werden. Wenn bei der Bildung eines neuen Prozesses die zur Ausführung benötige Ressourcenmenge überschritten werden würde, wird der Prozess verworfen.
+Es gibt bei Allocationen einige Konfigurationen die zurückgewiesen werden. Wenn bei der Bildung eines neuen Prozesses die zur Ausführung benötige Ressourcenmenge überschritten werden, wird der Prozess verworfen.
 
 \paragraph{Speicher}
-Der Speicher Controller reguliert die Verteilung des Speichers anhand verschiedener Modelle.
+Der Speicher Controller regelt die Verteilung des Speichers. Speicher ist zustandsabhängig und verwendet sowohl Limit als auch Protection Modelle. Aufgrund der Verflechtung zwischen Speicherbedarf und Speicherrückgabedruck ist die Verwaltung sehr kompliziert.
+
+Memory-low(Best-effort)
+Wenn 
+
+Memory-min(Hard-Limit)
+Wenn der Speicherverbrauch einer cgroup innerhalb seiner effektiven minimalen Grenze liegt, wird der Speicher der cgroup unter keinen Umständen zurückgefordert. Wenn nicht genug Speicherplatz zur Verfügung steht um die Minimalanforderung zu gewährleisten, kommt der OOM-Killer zum Einsatz und schafft freien Speicher.
+
+Memory-max(Hard-Limit)
+Dies ist der letzte Schutzmechanismus, wenn der Speicherverbrauch einer cgroup diese Grenze erreicht und nicht reduziert werden kann, wird der OOM-Killer in der cgroup aufgerufen. Unter bestimmten Umständen kann die Nutzung vorübergehend über das Limit hinaus gehen.
 
 \paragraph{CPU}
-Der CPU Controller reguliert die Verteilung der CPU-Zyklen.
+Der CPU Controller reguliert die Verteilung der CPU-Zyklen. Diese Steuerung Verwendet Gewichtung und Limit Modelle für normale Ressourcen Verteilung und das Allocation Modell für eine Echtzeit Verteilung.
+
+Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werden, da sich die Leistung der CPU aus Energie Effizienz gründen an die Auslastung anpasst.
 
 \paragraph{CPU Interface Files}
 
