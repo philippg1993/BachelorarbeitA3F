@@ -4,7 +4,7 @@
 \input{lib/includes}
 \input{lib/commands}
 %\addbibresource{literatur.bib}
-\addbibresource{mendeley.bib}
+\addbibresource{mendeley_v2.bib}
 
 
 \begin{document}
@@ -129,23 +129,27 @@ Sie können dieses \LaTeX-Template als Vorlage für Ihre Abschlussarbeit (\ac{BA
 % ----------------------------------------------------------------------------------
 \section{Theorie}
 \subsection{Container}
-Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsansatz auf Betriebssystemebene, bei dem der Host-Kernel zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \glqq Container \grqq{} bezeichnet. Linux-V Server[X], Open VZ\cite{IndexOpenvz.org} und Linux Container(LXC)\cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Ansatzes. Die allgemeine Architektur einer Container-basierten Virtualisierungslösung ist in (Abb1) dargestellt. Containerbasierte Virtualisierung erfolgt auf Betriebssystem Ebene, so dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Sie stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen zur Verfügung. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des LXC und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die cgroups Ressourcenverwaltungseinrichtungen\cite{ControlDocumentation} als Grundlage und fügt POSIX file Fähigkeiten [X] hinzu, um die Ressourcen unter den Containern einzuschränken. 
+Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsansatz auf Betriebssystemebene, bei dem der Host-Kernel zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \glqq Container \grqq{} bezeichnet. Linux-V Server[X], Open VZ\cite{IndexOpenvz.org} und Linux Container(LXC)\cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Ansatzes. Die allgemeine Architektur einer Container-basierten Virtualisierungslösung ist in (Abb \ref{fig:architecture}) dargestellt. Containerbasierte Virtualisierung erfolgt auf Betriebssystem Ebene, so dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Sie stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen zur Verfügung. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des LXC und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die cgroups Ressourcenverwaltungseinrichtungen\cite{ControlDocumentation} als Grundlage und fügt POSIX file Fähigkeiten [X] hinzu, um die Ressourcen unter den Containern einzuschränken. 
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/docker2.png}
-	\captionof{figure}[Abbildung1]{Aufbau Container und Virtuelle Maschine \cite{Xavier2015AClouds}}
-	\label{fig:reversi2}
+	\captionof{figure}[Architektur]{Aufbau Container und Virtuelle Maschine \cite{Xavier2015AClouds}}
+	\label{fig:architecture}
 \end{minipage}
 
 
 \subsection{Virtuelle Maschine}
-Typ-2-Hypervisor-basierte Virtualisierung erstellt eine komplette virtuelle Maschine auf dem Host Betriebssystem(Abb1). Jede virtuelle Maschine besteht nicht nur aus einer Anwendung mit ihren Abhängigkeiten, sondern aus einem kompletten Gastbetriebssystem und einem separaten Kernel. Es gibt zwei Klassen von Hypervisoren: den Typ-1-Hypervisor, auch bekannt als "Bare-Metal-Hypervisor", der direkt auf der zugrundeliegenden Hardware des Hosts arbeitet, und dem Typ-2-Hypervisor, auch bekannt als der "gehostete Hypervisor", der auf dem Host-Betreibssystem arbeitet.
+Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abb \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von Hypervisoren: Dem Typ 1 Hypervisor oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-Hypervisor "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Jede virtuelle Maschine besteht nicht nur aus einer Anwendung mit ihren Abhängigkeiten, sondern aus einem kompletten Gastbetriebssystem und einem separaten Kernel (siehe Abb \ref{fig:Hypervisor_Typ1/Typ2}).
 
-\subsubsection{Typ1-Hypervisor}
-Typ-1-Hypervisor-basierte (Bare Matal Hypervisor)
-\subsubsection{Typ2-Hypervisor}
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/hypervisor.jpg}
+	\captionof{figure}[Hypervisor Typ1/Type2]{Hypervisor Typ1/Typ2 \cite{Hypervisor}}
+	\label{fig:Hypervisor_Typ1/Typ2}
+\end{minipage}
 
 
 \subsection{Isolation}
@@ -160,15 +164,13 @@ Wenn man sich die zugrunde liegenden Funktionsaufrufe anschaut erkennt man, dass
 
 Derzeit existieren sechs verschiedene Namensräume, unter anderem der PID Namespace. Er kann uns über die Namespace-Abschottung z.B. einen sogenannten nested Process Tree zur Verfügung stellen, also einen gekapselten Prozessbaum innerhalb des eigentlichen (Host-)Prozessbaumes, in welchem unsere Container-Instanz läuft. Aber dies ist nicht der einzige Namspace, an dem unsere Container partizipieren dürfen.
 
-Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten Container-Prozess-Umgebung ist in Abbildung \ref{fig:PID} dargestellt.
-
-\cite{Liebel2017SkalierbareContainer-Infrastrukturen}
+Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten Container-Prozess-Umgebung ist in Abbildung \ref{fig:PID} dargestellt. \cite{Liebel2017SkalierbareContainer-Infrastrukturen}
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/PID.PNG}
-	\captionof{figure}[PID]{ PID Namespaces für Host und Container (im Fettdruck \cite{Liebel2017SkalierbareContainer-Infrastrukturen}}
+	\captionof{figure}[PID]{ PID Namespaces für Host und Container (im Fettdruck)}
 	\label{fig:PID}
 \end{minipage}
 
