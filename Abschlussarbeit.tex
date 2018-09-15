@@ -153,8 +153,24 @@ Das Ziel der Prozessisolation ist es, zu verhindern, dass Container untereinande
 
 -Resourcenisolation 
 
-\subsubsection{Kernel-Namespaces}
-Mit Hilfe der Namespaces kann man die Prozessisolation zwischen den Containern sicher stellen. Ein Container kann nur seine Eigenen Ressourcen sehen.
+\subsubsection{Namespaces}
+Seit der Einführung der Kernel Namespaces ist es möglich, Ressourcen des Kernsystems  voneinander zu isolieren und diese Teile unter bestimmten Voraussetzungen anderen Anwendungen/Prozessen zur Verfügung zu stellen. 
+
+Wenn man sich die zugrunde liegenden Funktionsaufrufe anschaut erkennt man, dass fast alle Namespaces via clone- und stnsOperationen zur Verfügung gestellt werden. Für den oder die Prozesse innerhalb eines Namespaces ist dies jedoch nicht erkennbar. Der innerhalb eines Namespaces gestatete Prozessaufruf arbeitet isoliert und sieht nur sich selbst und seine Kindprozesse, jedoch nicht die übergeordnete Umgebung, während der übergeordnete Prozess natürlich alle Namespaces und darin laufende Prozesse sieht. 
+
+Derzeit existieren sechs verschiedene Namensräume, unter anderem der PID Namespace. Er kann uns über die Namespace-Abschottung z.B. einen sogenannten nested Process Tree zur Verfügung stellen, also einen gekapselten Prozessbaum innerhalb des eigentlichen (Host-)Prozessbaumes, in welchem unsere Container-Instanz läuft. Aber dies ist nicht der einzige Namspace, an dem unsere Container partizipieren dürfen.
+
+Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten Container-Prozess-Umgebung ist in Abbildung \ref{fig:PID} dargestellt.
+
+\cite{Liebel2017SkalierbareContainer-Infrastrukturen}
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/PID.PNG}
+	\captionof{figure}[PID]{ PID Namespaces für Host und Container (im Fettdruck \cite{Liebel2017SkalierbareContainer-Infrastrukturen}}
+	\label{fig:PID}
+\end{minipage}
 
 \paragraph{PID-Namespace} ist hierarchisch[X] deshalb kann ein Prozess nur die anderen Prozesse in seinem eigenen Namensraum oder in seinen untergeordneten Namensräumen sehen. Folglich kann der Host die Prozesse innerhalb des neuen PID-namespace des Containers beobachten und beeinflussen, aber die Prozesse innerhalb des Containers können die anderen Prozesse, die im Host oder in anderen Containern laufen, nicht beobachten oder beeinflussen
 
@@ -223,14 +239,20 @@ Der CPU Controller reguliert die Verteilung der CPU-Zyklen. Diese Steuerung Verw
 Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werden, da sich die Leistung der CPU aus Energie Effizienz gründen an die Auslastung anpasst.
 
 \paragraph{IO}
-Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle.
+Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle. Die Gewichtung gibt die relative IO-Zeit and, die die cgroup in Bezug auf ihre Geschwister verwenden kann.
+
+
 
 \paragraph{OOM-Killer}
 
 
 
-\subsubsection{POSIX file capabilitie}
-%\subsubsection{adds POSIX ﬁle capabilitie}
+\subsubsection{Sicherheit-Container}
+In den letzten Jahren unterlag die Entwicklung von Container-Systemen wie Docker, Rocket und andern einer sehr schnellen Evolution. Dabei war der Fortschritt der Technologie wichtiger als die Sicherheit hinter dem System. Es existieren zahlreiche Studien, die alle auf den Schluss kommen, dass viel Potential in der Entwickelten Technologie steckt, doch die Sicherheit noch nicht ausreichend gegeben ist.
+
+Zwei Punkte spielen eine große Rolle. Zum einen die Sicherheit und Vertrauenswürdigkeit der Images, die den Container-Instanzen zugrunde liegen, zum anderen die oben benannten Namespaces. Die Nutzung von Namespaces stellt einen direkten Zugriff auf den Host-Kernel dar, ein Bereich zu dem sich Angreifer bei anderen Systemen erst einmal mühevoll durchkämpfen müssen.
+
+
 
 \subsubsection{VMM}
 
