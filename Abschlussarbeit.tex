@@ -180,7 +180,7 @@ cgroup ist ein Mechanismus, um Prozesse und System Ressourcen entlang der Hierar
 \paragraph{Ressourcen Verteilung}
 Cgroup Controller verfügen über verschiedene Ressourcen Verteilungs Modelle. Die Modelle sind auf die Art und den Verwendungszweck der Ressource zugeschnitten. Dieser Paragraph befasst sich mit den verschiedenen Hauptschemen und deren Aufgaben.
 
-----CPU kann kein Prozent wert zugeteilt werden weil durch eine geringe auslastung die leistung runterfährt (youtube video siehe one noteJérôme Petazzoni )
+----CPU kann kein Prozent wert zugeteilt werden weil durch eine geringe Auslastung die Leistung runter fährt (youtube video siehe one noteJérôme Petazzoni )
 
 \paragraph{Weight}
 Die Ressourcen eines Prozesses werden Proportional an alle aktiven Kind Prozesse verteilt. Da nur die aktiven Kind Prozesse welche aktuell Ressourcen benötigen an der Verteilung teilnehmen, werden die zugeteilten Ressourcen effizient genutzt. 
@@ -188,7 +188,7 @@ Die Ressourcen eines Prozesses werden Proportional an alle aktiven Kind Prozesse
 Alle Konfigurationen sind gültig und es gibt keinen Grund, Migrationen von Konfigurationsänderungsprozessen abzulehnen.
 
 \paragraph{Limit}
-Ist ein Max-Limit gesetzt, kann ein Kind Prozess nur bis zu der konfigurierten Menge einer Ressource Verwenden. Limits können auch als soft-Limits bezeichnet werden. Die Summe der Limits aller Kind Prozesse kann die zur Verfügung stehende Menge an Ressourcen des Eltern Prozesses überschreiten. Ein Limit ist sozusagen ein maximaler Richtwert der bei dringendem Bedarf überschritten werden kann. Der Prozess welcher den über das Limit hinaus ragende Anteil verwendet, steht unter erhöhtem Druck und wird gedrängt die Ressource schnell wieder frei zu geben. Wenn eine cgroup die Ressourcen nicht mehr benötigt, wird diese bis zu einem setzbaren Min-Limit freigegeben.
+Ist ein High-Limit gesetzt, kann ein Kind Prozess nur bis zu der konfigurierten Menge einer Ressource Verwenden. Low/High Limits können auch als soft-Limits bezeichnet werden. Die Summe der Limits aller Kind Prozesse kann die zur Verfügung stehende Menge an Ressourcen des Eltern Prozesses überschreiten. Ein Limit ist sozusagen ein maximaler Richtwert der bei dringendem Bedarf überschritten werden kann. Der Prozess welcher den über das Limit hinaus ragende Anteil verwendet, steht unter erhöhtem Druck und wird gedrängt die Ressource schnell wieder frei zu geben. Wenn eine cgroup die Ressourcen nicht mehr benötigt, wird diese bis zu einem setzbaren Low-Limit freigegeben.
 
 Da Limits überschritten werden können, sind alle Konfigurationen gültig und es gibt keinen Grund Konfigurationsänderungen zurück zu weisen.
 
@@ -203,24 +203,29 @@ Einer cgroup wird eine bestimmte Menge einer Ressource fest zugeteilt und stellt
 Es gibt bei Allocationen einige Konfigurationen die zurückgewiesen werden. Wenn bei der Bildung eines neuen Prozesses die zur Ausführung benötige Ressourcenmenge überschritten werden, wird der Prozess verworfen.
 
 \paragraph{Speicher}
-Der Speicher Controller regelt die Verteilung des Speichers. Speicher ist zustandsabhängig und verwendet sowohl Limit als auch Protection Modelle. Aufgrund der Verflechtung zwischen Speicherbedarf und Speicherrückgabedruck ist die Verwaltung sehr kompliziert.
+Der Speicher Controller regelt die Verteilung des Speichers. Speicher ist zustandsabhängig und verwendet sowohl Limit als auch Protection Modelle. Aufgrund der Verflechtung zwischen Speicherbedarf und Speicherrückgabeforderung ist die Verwaltung sehr kompliziert.
 
 Memory-low(Best-effort)
-Wenn 
+Der geforderte Mindestanteil wird gestellt. Unbenutzer Speicher kann bei Bedarf vom System verwendet werden.
+
+Memory-High(Best-effort)
+Dies ist der Hauptmechanismus zur Steuerung des Speicherverbrauchs einer cgroup. WEnn die Nutzung einer cgroup über die obere Grenze hinausgeht, werden die Prozesse der cgroup gedrosselt und unter starken Reklamationsdruck gesetzt.
 
 Memory-min(Hard-Limit)
-Wenn der Speicherverbrauch einer cgroup innerhalb seiner effektiven minimalen Grenze liegt, wird der Speicher der cgroup unter keinen Umständen zurückgefordert. Wenn nicht genug Speicherplatz zur Verfügung steht um die Minimalanforderung zu gewährleisten, kommt der OOM-Killer zum Einsatz und schafft freien Speicher.
+Falls der Speicherverbrauch einer cgroup innerhalb seiner effektiven minimalen Grenze liegt, wird der Speicher der cgroup unter keinen Umständen zurückgefordert. Wenn nicht genug Speicherplatz zur Verfügung steht um die Minimalanforderung zu gewährleisten, kommt der OOM-Killer zum Einsatz und schafft freien Speicher.
 
 Memory-max(Hard-Limit)
-Dies ist der letzte Schutzmechanismus, wenn der Speicherverbrauch einer cgroup diese Grenze erreicht und nicht reduziert werden kann, wird der OOM-Killer in der cgroup aufgerufen. Unter bestimmten Umständen kann die Nutzung vorübergehend über das Limit hinaus gehen.
+Wenn der Speicherverbrauch einer cgroup diese Grenze erreicht und nicht reduziert werden kann, wird der OOM-Killer in der cgroup aufgerufen, dies ist der letzte Schutzmechanismus. Unter bestimmten Umständen kann ein Prozess vorübergehend über das Limit hinaus gehen.
 
 \paragraph{CPU}
 Der CPU Controller reguliert die Verteilung der CPU-Zyklen. Diese Steuerung Verwendet Gewichtung und Limit Modelle für normale Ressourcen Verteilung und das Allocation Modell für eine Echtzeit Verteilung.
 
 Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werden, da sich die Leistung der CPU aus Energie Effizienz gründen an die Auslastung anpasst.
 
-\paragraph{CPU Interface Files}
+\paragraph{IO}
+Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle.
 
+\paragraph{OOM-Killer}
 
 
 
