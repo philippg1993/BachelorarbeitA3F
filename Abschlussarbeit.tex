@@ -94,12 +94,12 @@
 \titlespacing{\section}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 \titlespacing{\subsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 \titlespacing{\subsubsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
-%\titlespacing{\subsubsubsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing{\Paragraph}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 % Kopfzeile
 \renewcommand{\sectionmark}[1]{\markright{#1}}
 \renewcommand{\subsectionmark}[1]{}
 \renewcommand{\subsubsectionmark}[1]{}
-%\renewcommand{\subsubsubsectionmark}[1]{}
+%\renewcommand{\paragraphmark}[1]{}
 
 \lhead{Kapitel \thesection}
 \rhead{\rightmark}
@@ -111,6 +111,12 @@
 \setcounter{section}{0}
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 % ----------------------------------------------------------------------------------
 % Kapitel: Einleitung
@@ -141,7 +147,9 @@ Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsans
 
 
 \subsection{Virtuelle Maschine}
-Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abb \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von Hypervisoren: Dem Typ 1 Hypervisor oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-Hypervisor "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Jede virtuelle Maschine besteht nicht nur aus einer Anwendung mit ihren Abhängigkeiten, sondern aus einem kompletten Gastbetriebssystem und einem separaten Kernel (siehe Abb \ref{fig:Hypervisor_Typ1/Typ2}).
+Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abb \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von Hypervisoren: Dem Typ 1 Hypervisor oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-Hypervisor "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt (siehe Abb \ref{fig:Hypervisor_Typ1/Typ2}).
+
+Ganz gleich, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen über die Virtualisierungsschicht abgefangen werden
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -153,9 +161,7 @@ Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors eine 
 
 
 \subsection{Isolation}
-Das Ziel der Prozessisolation ist es, zu verhindern, dass Container untereinander beeinflussbar sind. Dieses Unterfangen ist mit Hilfe der sogenannten "namespaces" möglich. 
-
--Resourcenisolation 
+Das Ziel der Prozessisolation ist es, zu verhindern, dass Container untereinander beeinflussbar sind. Dieses Unterfangen ist mit Hilfe der sogenannten "namespaces" möglich. Die Ressourcen Isolation gewährleistet, dass Prozesse nur einen zugeteiltet anteil einer verfügbaren Ressource verwenden können, dies gelingt mit Hilfe der Cgroups.
 
 \subsubsection{Namespaces}
 Seit der Einführung der Kernel Namespaces ist es möglich, Ressourcen des Kernsystems  voneinander zu isolieren und diese Teile unter bestimmten Voraussetzungen anderen Anwendungen/Prozessen zur Verfügung zu stellen. 
@@ -174,15 +180,15 @@ Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten C
 	\label{fig:PID}
 \end{minipage}
 
-\paragraph{PID-Namespace} ist hierarchisch[X] deshalb kann ein Prozess nur die anderen Prozesse in seinem eigenen Namensraum oder in seinen untergeordneten Namensräumen sehen. Folglich kann der Host die Prozesse innerhalb des neuen PID-namespace des Containers beobachten und beeinflussen, aber die Prozesse innerhalb des Containers können die anderen Prozesse, die im Host oder in anderen Containern laufen, nicht beobachten oder beeinflussen
+\subparagraph{PID-Namespace} ist hierarchisch[X] deshalb kann ein Prozess nur die anderen Prozesse in seinem eigenen Namensraum oder in seinen untergeordneten Namensräumen sehen. Folglich kann der Host die Prozesse innerhalb des neuen PID-namespace des Containers beobachten und beeinflussen, aber die Prozesse innerhalb des Containers können die anderen Prozesse, die im Host oder in anderen Containern laufen, nicht beobachten oder beeinflussen
 
-\paragraph{Mount-Namespace} isoliert filesystem Mountpunkte, die von einem Container gesehen werden, so dass Prozesse in verschiedenen Containern unterschiedliche Ansichten der file Systemhierarchie haben können.
+\subparagraph{Mount-Namespace} isoliert filesystem Mountpunkte, die von einem Container gesehen werden, so dass Prozesse in verschiedenen Containern unterschiedliche Ansichten der file Systemhierarchie haben können.
 
 \paragraph{UTS-Namespace} erlaubt es jedem Container seinen eigenen Hostnamen und NIS-Domänennamen zu haben.
 
 \paragraph{IPC-Namespace} isoliert die Interprozesskommunikation, das bedeutet Prozesse, die in einem Container enthalten sind, haben eigene Nachrichten Warteschlangen und sind völlig unabhängig von Prozessen in anderen Containern.
 
-\paragraph{Network namespace} isoliert das Netzwerk-Untersystem wie z.B. Geräte und IP-Adressen. Jeder Container unterhält seine eigene Netzwerk Konfiguration und die darauf laufenden Anwendung.
+\subparagraph{Network namespace} isoliert das Netzwerk-Untersystem wie z.B. Geräte und IP-Adressen. Jeder Container unterhält seine eigene Netzwerk Konfiguration und die darauf laufenden Anwendung.
 
 \paragraph{User-Namespace} isoliert Benutzer-IDs vom Host und anderen laufenden Containern. Das bedeutet, dass der Benutzer root (ID0) innerhalb eines Containers volle Privilegien hat, aber keine Privilegien außerhalb, was Sicherheit und Zuverlässigkeit gewährleistet. \cite{Xavier2015AClouds}
 	
@@ -195,32 +201,35 @@ Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten C
 cgroup ist ein Mechanismus, um Prozesse und System Ressourcen entlang der Hierarchie in einer kontrollierten und konfigurierbaren weise hierarchisch zu organisieren. cgroup besteht im Wesentlichen aus zwei Teilen, dem Kern und dem Controller. Der cgroup Kern ist in erster Linie für die hierarchische Organisation von Prozessen zuständig. Der cgroup Controller ist in der Regel für die Verteilung einer bestimmten Art von System Ressource entlang der Hierarchie verantwortlich. Cgroup bilden eine Baumstruktur und jeder Prozess im System gehört genau zu einer cgroup. Alle Unterprozesse (Kind Prozesse) eines Prozesses (Eltern Prozess) gehören zur gleichen cgroup. Alle neu erstellten Prozesse gehören zu der cgroup zu der auch der Eltern Prozess gehört.
 
 
-\paragraph{Ressourcen Verteilung}
+\paragraph{Ressourcen Verteilungs Modelle}
 Cgroup Controller verfügen über verschiedene Ressourcen Verteilungs Modelle. Die Modelle sind auf die Art und den Verwendungszweck der Ressource zugeschnitten. Dieser Paragraph befasst sich mit den verschiedenen Hauptschemen und deren Aufgaben.
 
 ----CPU kann kein Prozent wert zugeteilt werden weil durch eine geringe Auslastung die Leistung runter fährt (youtube video siehe one noteJérôme Petazzoni )
 
-\paragraph{Weight}
+\subparagraph{Weight}
 Die Ressourcen eines Prozesses werden Proportional an alle aktiven Kind Prozesse verteilt. Da nur die aktiven Kind Prozesse welche aktuell Ressourcen benötigen an der Verteilung teilnehmen, werden die zugeteilten Ressourcen effizient genutzt. 
 
 Alle Konfigurationen sind gültig und es gibt keinen Grund, Migrationen von Konfigurationsänderungsprozessen abzulehnen.
 
-\paragraph{Limit}
+\subparagraph{Limit}
 Ist ein High-Limit gesetzt, kann ein Kind Prozess nur bis zu der konfigurierten Menge einer Ressource Verwenden. Low/High Limits können auch als soft-Limits bezeichnet werden. Die Summe der Limits aller Kind Prozesse kann die zur Verfügung stehende Menge an Ressourcen des Eltern Prozesses überschreiten. Ein Limit ist sozusagen ein maximaler Richtwert der bei dringendem Bedarf überschritten werden kann. Der Prozess welcher den über das Limit hinaus ragende Anteil verwendet, steht unter erhöhtem Druck und wird gedrängt die Ressource schnell wieder frei zu geben. Wenn eine cgroup die Ressourcen nicht mehr benötigt, wird diese bis zu einem setzbaren Low-Limit freigegeben.
 
 Da Limits überschritten werden können, sind alle Konfigurationen gültig und es gibt keinen Grund Konfigurationsänderungen zurück zu weisen.
 
-\paragraph{Protection}
+\subparagraph{Protection}
 Eine cgroup ist so geschützt, dass sie bis zur konfigurierten Menge der Ressource fest zugeordnet werden kann, wenn die Verwendung aller Prozesse unter der geschützten Ebene Liegt. Der Schutz kann garantiert oder effizient sein. Bei garantiertem Schutz wird die Ressource explizit für die cgroup frei gehalten und kann vollständig verwendet werden. Die Effizientere Variante bietet die Möglichkeit zugeteilte Ressourcen auf Anfrage für andere Prozesse frei zu stellen.
 
 Die Protectionen können überschritten werden somit sind alle Konfigurationsmethoden gültig.
 
-\paragraph{Allocation}
+\subparagraph{Allocation}
 Einer cgroup wird eine bestimmte Menge einer Ressource fest zugeteilt und stellt somit ein Hard-Limit dar. Die Summe der Zuweisungen von Kind Prozessen dürfen die Menge der fest zugeteilten Ressource des Eltern Prozesses nicht überschreiten. Auch wenn die Ressource nicht ausgenutzt wird, bleibt diese der cgroup erhalten. 
 
 Es gibt bei Allocationen einige Konfigurationen die zurückgewiesen werden. Wenn bei der Bildung eines neuen Prozesses die zur Ausführung benötige Ressourcenmenge überschritten werden, wird der Prozess verworfen.
 
-\paragraph{Speicher}
+\paragraph{Ressourcen Modellierung}
+Im folgenden Paragraphen werden Art der Ressource mit verwendetem Modell aufgelistet
+
+\subparagraph{Speicher}
 Der Speicher Controller regelt die Verteilung des Speichers. Speicher ist zustandsabhängig und verwendet sowohl Limit als auch Protection Modelle. Aufgrund der Verflechtung zwischen Speicherbedarf und Speicherrückgabeforderung ist die Verwaltung sehr kompliziert.
 
 Memory-low(Best-effort)
@@ -235,12 +244,12 @@ Falls der Speicherverbrauch einer cgroup innerhalb seiner effektiven minimalen G
 Memory-max(Hard-Limit)
 Wenn der Speicherverbrauch einer cgroup diese Grenze erreicht und nicht reduziert werden kann, wird der OOM-Killer in der cgroup aufgerufen, dies ist der letzte Schutzmechanismus. Unter bestimmten Umständen kann ein Prozess vorübergehend über das Limit hinaus gehen.
 
-\paragraph{CPU}
+\subparagraph{CPU}
 Der CPU Controller reguliert die Verteilung der CPU-Zyklen. Diese Steuerung Verwendet Gewichtung und Limit Modelle für normale Ressourcen Verteilung und das Allocation Modell für eine Echtzeit Verteilung.
 
 Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werden, da sich die Leistung der CPU aus Energie Effizienz gründen an die Auslastung anpasst.
 
-\paragraph{IO}
+\subparagraph{IO}
 Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle. Die Gewichtung gibt die relative IO-Zeit and, die die cgroup in Bezug auf ihre Geschwister verwenden kann.
 
 
@@ -254,7 +263,7 @@ In den letzten Jahren unterlag die Entwicklung von Container-Systemen wie Docker
 
 Zwei Punkte spielen eine große Rolle. Zum einen die Sicherheit und Vertrauenswürdigkeit der Images, die den Container-Instanzen zugrunde liegen, zum anderen die oben benannten Namespaces. Die Nutzung von Namespaces stellt einen direkten Zugriff auf den Host-Kernel dar, ein Bereich zu dem sich Angreifer bei anderen Systemen erst einmal mühevoll durchkämpfen müssen.
 
-
+\subse
 
 \subsubsection{VMM}
 
