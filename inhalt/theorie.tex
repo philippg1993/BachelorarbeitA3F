@@ -15,21 +15,23 @@ Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsans
 \subsection{Virtuelle Maschine}
 Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors (VMM)/Hypervisor eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abb \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt (siehe Abb \ref{fig:Hypervisor_Typ1/Typ2}).
 
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/Hypervisoren.PNG}
+	\captionof{figure}[Hypervisor Typ1/Type2]{Hypervisor Typ1/Typ2 \cite{Meinel2011VirtualisierungMarktubersicht} }
+	\label{fig:Hypervisor_Typ1/Typ2}
+\end{minipage}
+
 \subsubsection{Typ-1-VMM}
 Der VMM kümmert sich um die Ressourcenverwaltung und die Bereitstellung von Virtuellen Maschinen und stellt ein eigenes Betriebssystem dar. Die Aufteilung der Rechenzeit und die Zuteilung von Speicher auf die einzelnen VMs sind beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt.VMware ESX [X] ist ein Beispiel für diesen Virtuallisierungs Ansatz, das mit einem eigenen Treiber nur direkt auf der Hardware laufen kann.
 
 \subsubsection{Typ-2-VMM}
 Ein Typ-2-VMM teilt sich ein Gastgeberbetriebssystem(Host) mit anderen Applikationen. Um die nötigen Rechte auf der Hardware zu erhallten, wird ein spezieller VMM-Treiber verwendet, der direkt unter dem Host-system installiert wird. Dieser ermöglicht Privilegierte Zugriffsrechte auf den Kern.
 
-Ganz gleich, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen über die Virtualisierungsschicht abgefangen werden \cite{Glatz2015Betriebssysteme}.
+Ganz gleich, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen über die Virtualisierungsschicht abgefangen und interpretiert werden \cite{Glatz2015Betriebssysteme}.
 
-\vspace{1em}
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=1\linewidth]{pics/hypervisor.jpg}
-	\captionof{figure}[Hypervisor Typ1/Type2]{Hypervisor Typ1/Typ2 \cite{Hypervisor}}
-	\label{fig:Hypervisor_Typ1/Typ2}
-\end{minipage}
+
 
 
 \subsection{Isolation}
@@ -135,8 +137,6 @@ In den letzten Jahren unterlag die Entwicklung von Container-Systemen wie Docker
 
 Zwei Punkte spielen eine große Rolle. Zum einen die Sicherheit und Vertrauenswürdigkeit der Images, die den Container-Instanzen zugrunde liegen, zum anderen die oben benannten Namespaces. Die Nutzung von Namespaces stellt einen direkten Zugriff auf den Host-Kernel dar, ein Bereich zu dem sich Angreifer bei anderen Systemen erst einmal mühevoll durchkämpfen müssen.
 
-\subsubsection{VMM}
 
-\paragraph{test}
 
 %\pagebreak
