@@ -106,7 +106,17 @@ Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller ver
 
 
 \subsection{Virtuelle Maschine}
-Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors (VMM)/Hypervisor eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abbildung \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt.
+Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors (VMM)/Hypervisor eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abbildung \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Die Grundanforderung eines VMM sind nach Popek/Goldberg (1974) \cite{Popek1974FormalArchitectures,Glatz2015Betriebssysteme} :
+
+\subparagraph{Ausführungsumgebung}
+Prozesse welche auf der Virtuellen Maschine gestartet wurden, laufen mit Ausnahme der Geschwindigkeit identisch ab, wie Prozesse auf einem originalen Host-System.
+
+\subparagraph{Effizienz}
+Die meisten Prozesse werden von der Hardware direkt ausgeführt ohne eingreifen des VMM
+
+\subparagraph{Ressourcenverwaltung}
+
+Es darf kein Prozess Ressourcen verwalten. Bei jedem zugriffsversuch eines Prozesses auf Systemressourcen wird der VMM aufgerufen.
 
 \subsubsection{Typ-1-VMM}
 Der VMM Liegt direkt auf der Hardware mit vollen Zugriffsrechten, kümmert sich um die Ressourcenverwaltung und die Isolierte Bereitstellung von Virtuellen Maschinen und stellt ein eigenes Betriebssystem dar (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} a) . Die Aufteilung der Rechenzeit und die Zuteilung von Speicher auf die einzelnen VMs sind beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt. VMware ESX [X] ist ein Beispiel für diesen Virtuallisierungs Ansatz, das mit einem eigenen Treiber nur direkt auf der Hardware laufen kann.
@@ -126,7 +136,7 @@ Ein Typ-2-VMM teilt sich ein Gastgeberbetriebssystem(Host) mit anderen Applikati
 \subsubsection{Rechteverwaltung}
 Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen von der Virtualisierungsschicht abgefangen und interpretiert werden \cite{Glatz2015Betriebssysteme}. Das geschieht entweder über \glqq binary translation \grqq{} oder Via Hypercalls. 
 
- Es gibt bei aktuellen x86 Prozessoren eine Rechteverwaltung welche man als Ringdiagramm darstellen kann (siehe Abbildung \ref{fig:Ringmodell1} b).Im Ring 0 Besitzt man Volle Zugriffsrechte auf zum Beispiel Hardware Ressourcen, auf dieser Ebene ist der Kernel beheimatet. Die Ringe 1 und 2 stehen für Treiber zur Verfügung und im Ring 3 Stehen alle sonstigen Anwendungen. Die Kernel der Gastbetriebssysteme befinden sich ebenfalls in dem 3. Ring. Wenn eine Anwendung direkt auf einen Speicherbereich zugreifen will, der vom Kernel reserviert ist, tritt eine Speicherschutzverletzung auf und der Zugriff wird verweigert, was den Prozess abstürzen lässt. Der Hypervisor fängt solche kritischen Anfragen ab überprüft diese, Codiert die Anfragenstellung gegebenenfalls um und führt sie selbst aus. Nach dem Aufruf folgt eine entsprechende Rückübersetzung und Rückabe an die aufrufende virtuelle Maschine. Dieser Vorgang heist \glqq binary translation \grqq{} und muss sehr häufig durchgeführt werden, was zu einem Overhead, der erhöhte Leistungseinbußen zur Folge hat. 
+ Es gibt bei aktuellen Prozessoren eine Rechteverwaltung welche man als Ringdiagramm darstellen kann (siehe Abbildung \ref{fig:Ringmodell1} b).Im Ring 0 Besitzt man Volle Zugriffsrechte auf Hardware Ressourcen, auf dieser Ebene ist der Kernel beheimatet. Die Ringe 1 und 2 stehen für Treiber zur Verfügung und im Ring 3 Stehen alle sonstigen Anwendungen. Die Kernel der Gastbetriebssysteme befinden sich ebenfalls in dem 3. Ring. Wenn eine Anwendung direkt auf einen Speicherbereich zugreifen will, der vom Kernel reserviert ist, tritt eine Speicherschutzverletzung auf und der Zugriff wird verweigert, was den Prozess abstürzen lässt. Der Hypervisor fängt solche kritischen Anfragen ab überprüft diese, Codiert die Anfragenstellung gegebenenfalls um und führt sie selbst aus. Nach dem Aufruf folgt eine entsprechende Rückübersetzung und Rückabe an die aufrufende virtuelle Maschine. Dieser Vorgang heist \glqq binary translation \grqq{} und muss sehr häufig durchgeführt werden, was zu einem Overhead, der erhöhte Leistungseinbußen zur Folge hat. 
  
  
  \vspace{1em}
@@ -155,20 +165,6 @@ Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemein
 
 
 
-\subparagraph{Container Based}
-Linux-V Server
-open VZ
-Linux Container
-
-\subparagraph{Typ1VMM}
-VMware ESX
-
-\subparagraph{Typ2VMM}
-
-VMware Workstation
-Virtual Box
-Xen
-
 
 Virtuallisierungen
 Vollstendige virtuallisierung 
@@ -177,6 +173,7 @@ Paravirtualisierung
 Hyper-V
 KVM
 
+Kernel
 OOM Killer
 
 %\pagebreak
