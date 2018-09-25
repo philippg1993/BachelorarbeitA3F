@@ -4,6 +4,8 @@
 
 In der Industrie geht es meist darum wie man kosten einsparen kann. Die Hardware systeme in Firmen werden häufig nur zu einem geringen Prozentsatz ausgelastet. Neue Hardware für zusätzliche Anforderungen ist sehr teuer. Wenn es nur eine Möglichkeit geben würde auf einem System mehrere von einander Isolierte Umgebungen zu schaffen und die schon vorhandenen Kapazitäten auszunutzen, könnten kosten durch neue Anschaffung, platz und sogar Strom gespart werden. eine solche Möglichkeit gibt es, dank der Virtualisierung von Hardware-Ressourcen wie Speicher, CPU, I/O können Container und Virtuelle Maschinen erzeugt werden, welche die Ausführung mehrerer von einander isolierter Prozesse ermöglicht.
 
+\pagebreak
+
 \subsection{Container}
 Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsansatz auf Betriebssystem Ebene, bei dem der Host (Gastgeber)-Kernel zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \glqq Container \grqq{} bezeichnet. Der Kernel ist so zu sagen der Kern eines Betriebssystems, der die Schnittstelle zur Hardware bildet und für die Ressourcenverwaltung grundverantwortlich ist. Linux-V Server\cite{Overview2018PaperLinux-VServer}, Open VZ\cite{IndexOpenvz.org} und Linux Container(LXC)\cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Ansatzes. Die allgemeine Architektur einer Container-basierten virtualisierungs Lösung ist in Abbildung \ref{fig:architecture} dargestellt. Container basierte Virtualisierung erfolgt auf Betriebssystem Ebene, so dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Sie stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen zur Verfügung. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des LXC und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die cgroups Ressourcenverwaltungseinrichtungen\cite{Heo2015ControlV2} als Grundlage und fügt POSIX file Capabilities\cite{Overview2018PaperLinux-VServer} hinzu, um die Ressourcen unter den Containern einzuschränken. 
 
@@ -49,9 +51,9 @@ Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten C
 
 
 \subsubsection{cgroup}
-\glqq c-group\grqq{} steht für \glqq contol group\grqq{}. Durch cgroup ist es möglich, eine Reihe von Kriterien anzuwenden, um Ressourcen wie Speicher,Netzwerk, Festplatten-I/O und CPU einzuschränken. Ein Container sollte seine auferlegten Beschränkungen nicht überschreiten und andere Container, die auf derselben Hardware laufen, nicht stören. Cgroup ist für die Ressourcen Begrenzung, Priorisierung, Abrechnung und Kontrolle zuständig.\cite{Heo2015ControlV2} 
+\glqq c-group\grqq{} steht für \glqq contol group\grqq{}. Durch cgroup ist es möglich, eine Reihe von Kriterien anzuwenden, um Ressourcen wie Speicher,Netzwerk, Festplatten-I/O und CPU einzuschränken. Ein Container sollte seine auferlegten Beschränkungen nicht überschreiten und andere Container, die auf derselben Hardware laufen, nicht stören. Cgroup ist für die Ressourcen Begrenzung, Priorisierung, Abrechnung und Kontrolle zuständig.
 
-cgroup ist ein Mechanismus, um Prozesse und System Ressourcen entlang der Hierarchie in einer kontrollierten und konfigurierbaren weise hierarchisch zu organisieren. cgroup besteht im Wesentlichen aus zwei Teilen, dem Kern und dem Controller. Der cgroup Kern ist in erster Linie für die hierarchische Organisation von Prozessen zuständig. Der cgroup Controller ist in der Regel für die Verteilung einer bestimmten Art von System Ressource entlang der Hierarchie verantwortlich. Cgroup bilden eine Baumstruktur und jeder Prozess im System gehört genau zu einer cgroup. Alle Unterprozesse (Kind Prozesse) eines Prozesses (Eltern Prozess) gehören zur gleichen cgroup. Alle neu erstellten Prozesse gehören zu der cgroup zu der auch der Eltern Prozess gehört.
+cgroup ist ein Mechanismus, um Prozesse und System Ressourcen entlang der Hierarchie in einer kontrollierten und konfigurierbaren weise hierarchisch zu organisieren. cgroup besteht im Wesentlichen aus zwei Teilen, dem Kern und dem Controller. Der cgroup Kern ist in erster Linie für die hierarchische Organisation von Prozessen zuständig. Der cgroup Controller ist in der Regel für die Verteilung einer bestimmten Art von System Ressource entlang der Hierarchie verantwortlich. Cgroup bilden eine Baumstruktur und jeder Prozess im System gehört genau zu einer cgroup. Alle Unterprozesse (Kind Prozesse) eines Prozesses (Eltern Prozess) gehören zur gleichen cgroup. Alle neu erstellten Prozesse gehören zu der cgroup zu der auch der Eltern Prozess gehört.\cite{Heo2015ControlV2} 
 
 
 \paragraph{Ressourcen Verteilungs Modelle}
@@ -103,7 +105,7 @@ Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werd
 \subparagraph{IO}
 Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle. Die Gewichtung gibt die relative IO-Zeit and, die die cgroup in Bezug auf ihre Geschwister verwenden kann.
 
-
+\pagebreak
 \subsection{Virtuelle Maschine}
 Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors (VMM)/Hypervisor eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abbildung \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Die Grundanforderung eines VMM sind nach Popek/Goldberg (1974) \cite{Popek1974FormalArchitectures,Glatz2015Betriebssysteme} :
 
@@ -118,7 +120,7 @@ Die meisten Prozesse werden von der Hardware direkt ausgeführt ohne eingreifen 
 Es darf kein Prozess Ressourcen verwalten. Bei jedem zugriffsversuch eines Prozesses auf Systemressourcen wird der VMM aufgerufen.
 
 \subsubsection{Typ-1-VMM}
-Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrechten und stellt ein Betriebssystem dar (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} a). Der VMM kümmert sich um die Ressourcenverwaltung und die Isolierte Bereitstellung von Virtuellen Maschinen. Die Aufteilung der Rechenzeit (CPU) und die Zuteilung von Speicher auf die einzelnen VMs sind Beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt. VMware ESX [X] verwendet diesen Virtualisierungs Ansatz, der nur mit einem eigenen auf die Hardware zugeschnittenen Treiber laufen kann \cite{Glatz2015Betriebssysteme}.
+Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrechten und stellt ein Betriebssystem dar (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} a). Der VMM kümmert sich um die Ressourcenverwaltung und die Isolierte Bereitstellung von Virtuellen Maschinen. Die Aufteilung der Rechenzeit (CPU) und die Zuteilung von Speicher auf die einzelnen VMs sind Beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt. VMware ESX \cite{Go-to2018ESXi} verwendet diesen Virtualisierungs Ansatz, der nur mit einem eigenen auf die Hardware zugeschnittenen Treiber laufen kann \cite{Glatz2015Betriebssysteme}.
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -131,16 +133,16 @@ Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrecht
 \subsubsection{Typ-2-VMM}
 Ein gehosteter-Hypervisor teilt sich ein Gastgeberbetriebssystem(Host-Betriebssystem) mit anderen Applikationen (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} b). Um die nötigen Rechte auf der Hardware zu erhalten, wird ein spezieller VMM-Treiber verwendet, der direkt unter dem Host-system installiert wird. Dieser ermöglicht Privilegierte Zugriffsrechte auf den Kernel. VMware Workstation, Virtual-Box und Xen sind Produkte dieser Realisierung der Virtualisierung \cite{Glatz2015Betriebssysteme}.
 
-\subsubssection{Zwischen Typ1 und Typ2}
+\subsubsection{Hybridformen}
 
 
 Hypervisors die von Haus aus direkt in das Betriebssystem integriert wurden, sind zwischen Typ 1 und Typ 2 anzusiedeln. Die Realisierung von Linux heist KVM(Kernel-based Virtual Mashine), die von Windows Hyper-V.
 
 \subsubsection{Rechteverwaltung}
-Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen von der Virtualisierungsschicht (Hypervisor) abgefangen und interpretiert werden \cite{Meinel2011VirtualisierungMarktubersicht}. Das geschieht entweder über \glqq binary translation \grqq{} oder Via Hypercalls. 
+Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen von der Virtualisierungsschicht (Hypervisor) abgefangen und interpretiert werden \cite{Meinel2011VirtualisierungMarktubersicht}. Das geschieht entweder über \glqq binary translation \grqq{} oder Via Hypercalls.  Es gibt bei aktuellen Prozessoren eine Rechteverwaltung welche man als Ringdiagramm darstellen kann (siehe Abbildung \ref{fig:Ringmodell1} b).Im Ring 0 Besitzt man Volle Zugriffsrechte auf Hardware Ressourcen, auf dieser Ebene ist der Kernel beheimatet. Die Ringe 1 und 2 stehen für Treiber zur Verfügung und im Ring 3 Stehen alle sonstigen Anwendungen. Die Kernel der Gastbetriebssysteme befinden sich ebenfalls in dem 3. Ring.
 
- Es gibt bei aktuellen Prozessoren eine Rechteverwaltung welche man als Ringdiagramm darstellen kann (siehe Abbildung \ref{fig:Ringmodell1} b).Im Ring 0 Besitzt man Volle Zugriffsrechte auf Hardware Ressourcen, auf dieser Ebene ist der Kernel beheimatet. Die Ringe 1 und 2 stehen für Treiber zur Verfügung und im Ring 3 Stehen alle sonstigen Anwendungen. Die Kernel der Gastbetriebssysteme befinden sich ebenfalls in dem 3. Ring. Wenn eine Anwendung direkt auf einen Speicherbereich zugreifen will, der vom Host-Kernel reserviert ist, tritt eine Speicherschutzverletzung auf und der Zugriff wird verweigert, was den Prozess abstürzen lässt. Der Hypervisor fängt solche kritischen Anfragen ab, überprüft diese, Codiert die Anfragenstellung gegebenenfalls um und führt sie selbst mit Höheren Zugriffsrechten aus. Nach dem Aufruf folgt eine entsprechende Rückübersetzung und Rückabe an die aufrufende virtuelle Maschine. Dieser Vorgang heist \glqq binary translation \grqq{} und muss sehr häufig durchgeführt werden, was zu einem erheblichen Overhead führt, der erhöhte Leistungseinbußen zur Folge hat \cite{Meinel2011VirtualisierungMarktubersicht}. 
- 
+\subparagraph{Vollständigevirtualisierung}
+ Wenn eine Anwendung direkt auf einen Speicherbereich zugreifen will, der vom Host-Kernel reserviert ist, tritt eine Speicherschutzverletzung auf und der Zugriff wird verweigert, was den Prozess abstürzen lässt. Der Hypervisor fängt solche kritischen Anfragen ab, überprüft diese, Codiert die Anfragenstellung gegebenenfalls um und führt sie selbst mit Höheren Zugriffsrechten aus. Nach dem Aufruf folgt eine entsprechende Rückübersetzung und Rückabe an die aufrufende virtuelle Maschine. Dieser Vorgang heist \glqq binary translation \grqq{} und muss sehr häufig durchgeführt werden, was zu einem erheblichen Overhead führt, der signifikante Leistungseinbußen zur Folge hat. Der Ansatz der vollständigen Virtualisierung benötigt keine spezielle Hardware \cite{Meinel2011VirtualisierungMarktubersicht}. 
  
  \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -150,11 +152,8 @@ Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemein
 	\label{fig:Ringmodell1}
 \end{minipage}
  
- 
- 
- Um Hypercalls ausführen zu können, benötigt man eine Paravirtuallisierung. Hierzu müssen die Kernel der Gastbetriebssysteme so angepasst werden, dass diese auf Ring 1 laufen können (siehe Abbildung \ref{fig:Ringmodell2}). Aus Systemaufrufen werden nun Hypercalls, die direkt an den Hypervisor und nicht wie vorher an das Host-System gesendet werden. Der Hypervisor führt den entsprechenden Systemaufruf aus und bedient die aufrufende virtuelle Maschine \cite{Meinel2011VirtualisierungMarktubersicht}.
-
-
+ \subparagraph{Paravirtualisierung}
+ Um Hypercalls ausführen zu können, benötigt man eine Paravirtuallisierung. Hierzu müssen die Kernel der Gastbetriebssysteme so angepasst werden, dass diese auf Ring 1 laufen können (siehe Abbildung \ref{fig:Ringmodell2}). Aus Systemaufrufen werden nun Hypercalls, die direkt an den Hypervisor und nicht wie vorher an das Host-System gesendet werden. Der Hypervisor führt den entsprechenden Systemaufruf aus und bedient die aufrufende virtuelle Maschine \cite{Meinel2011VirtualisierungMarktubersicht}. Um diese Effizientere Methode der Virtualisierung zu verwenden, ist darauf zugeschnittene Hardware nötig.
 
  \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -164,19 +163,10 @@ Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemein
 	\label{fig:Ringmodell2}
 \end{minipage}
  
+\subparagraph{Hardwareunterstützung}
+Durch die Hardware Unterstützung von Intel VT\cite{TechnologyIntel} oder AMD-v\cite{AMDVirtualisierungstechnologie} die den Prozessor-Befehlssatz erweitern, können virtuelle Maschinen System Calls nativ ausführen ohne die Kerne der Gastbetriebssysteme zu modifizierne, wie es bei der Paravirtualisierung gemacht wird. Die Hardwareunterstützte Variante ist die Performanteste Methode der Hypervisor technologien \cite{Meinel2011VirtualisierungMarktubersicht}.
 
 
 
-
-
-Virtuallisierungen
-Vollstendige virtuallisierung 
-Paravirtualisierung
-
-Hyper-V
-KVM
-
-Kernel
-OOM Killer
 
 %\pagebreak
