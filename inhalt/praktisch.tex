@@ -5,12 +5,22 @@
 \subsection{Realisierung}
 Im Linux-File-System ist es möglich cgroups über PID's ausfindig zu machen und die verwendeten Ressourcen auszugeben. Was mich auf die Idee brachte, einen neuen Docker-Container zu erstellen, in diesem einen Prozess mit einem einfachen malloc() befehlt in einer Endlosschleife auszuführen und die menge des allokierten Speichers der cgroup auszugeben. 
 
-Über das online user interface war es einfach einen Docker-Container schnell zu erstellen. Ressourcen Limits konnten ebenfalls vor dem starten des Containers eingestellt werden. Für den ersten Start des Containers benötigen wir allerdings noch keine Begrenzung des Speichers, da es in erster Linie um die Auswirkung des ausgeführten C-Programms auf die eigene cgroup geht. Der verwendete C-Code den der Prozess ausführt ist in Abbildung (C-Code While1) screenshot)) Ein selbst erstelltes Skript verwendet die beim Start erzeugte PID, findet dadurch die cgroup in der der Prozess ausgeführt wird und schreibt die Messdaten in ein txt-File. Die ausgegebenen Messdaten wie Clock-Time in NS und Speicherverbrauch in Bytes werden für die Auswertung verwendet.
+\subparagraph{Test01}
+Über das online user interface war es einfach einen Docker-Container schnell zu erstellen. Ressourcen Limits konnten ebenfalls vor dem starten des Containers eingestellt werden. Für den ersten Start des Containers benötigen wir allerdings noch keine Begrenzung des Speichers, da es in erster Linie um die Auswirkung des ausgeführten C-Programms auf die eigene cgroup geht. Der verwendete C-Code den der Prozess ausführt wird, ist in Abbildung (C-Code While1) screenshot)) zu sehen. Ein selbst erstelltes Skript verwendet die beim Start erzeugte PID, findet die cgroup in der der Prozess ausgeführt wird und schreibt die Messdaten in ein txt-File. Die ausgegebenen Messdaten wie Clock-Time in NS und Speicherverbrauch in Bytes werden für die Auswertung verwendet.
 
-\subparagraph{Erwartungshaltung}
+\subparagraph{Erwartungshaltung Test 01}
+Falls das SKript die Messwerte in ungefähr gleichmäßig schnellen Abständen liefert, und die Speicher Allocationen gleich schnell ablaufen, erwarte ich eine Gerade Funktion, die gleichbleibend schnell ansteigt und irgendwann wenn nicht mehr genug Speicher im System vorhanden ist beendet wird.
 
+\subparagraph{Ergebnis Test01}
 (Siehe Abbildung (cgroup ohne limit noch nicht erstellt)
 
-Als nächstes wäre es interessant zu sehen wie die Cgroup verläuft, wenn man ein Speicherlimit festlegt, das nicht überschritten werden soll (Hard-Limit). Um dieses Limit zu erstellen, wurde im User-Interface lediglich das Ressourcenlimit auf [X]MegaByte gesetzt und das in Abbildung(X) vorgestellte Programm nochmals ausgeführt.
+\subparagraph{Test02}
+Als nächstes wäre es interessant zu sehen wie der Graph der Cgroup verläuft, wenn man ein Speicherlimit festlegt, das nicht überschritten werden soll (Hard-Limit). Um dieses Limit zu erstellen, wurde im User-Interface lediglich das Ressourcenlimit auf [X]MegaByte gesetzt und das in Abbildung(X) vorgestellte Programm nochmals ausgeführt.
+
+\subparagraph{Erwartungshaltung Test 02}
+Da nun ein Hard-Limit gesetzt wurde kann ich mir vorstellen, dass die cgroup wie in Abbildung (X) gerade ansteigt, minimal über das limit hinaus ragt, und dann wegen überschreiten des Hard-Limits vom System beendet wird.
+
+\subparagraph{Ergebnis Test02}
+(nur c-group mit limit)
 
 \pagebreak
