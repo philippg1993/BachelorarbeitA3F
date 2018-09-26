@@ -6,8 +6,8 @@ In der Industrie geht es meist darum wie man kosten einsparen kann. Die Hardware
 
 \pagebreak
 
-\subsection{Container}
-Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsansatz auf Betriebssystem Ebene, bei dem der Host (Gastgeber)-Kernel zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \glqq Container \grqq{} bezeichnet. Der Kernel ist so zu sagen der Kern eines Betriebssystems, der die Schnittstelle zur Hardware bildet und für die Ressourcenverwaltung grundverantwortlich ist. Linux-V Server\cite{Overview2018PaperLinux-VServer}, Open VZ\cite{IndexOpenvz.org} und Linux Container(LXC)\cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Ansatzes. Die allgemeine Architektur einer Container-basierten virtualisierungs Lösung ist in Abbildung \ref{fig:architecture} dargestellt. Container basierte Virtualisierung erfolgt auf Betriebssystem Ebene, so dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Sie stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen zur Verfügung. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des LXC und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die cgroups Ressourcenverwaltungseinrichtungen\cite{Heo2015ControlV2} als Grundlage und fügt POSIX file Capabilities\cite{Overview2018PaperLinux-VServer} hinzu, um die Ressourcen unter den Containern einzuschränken. 
+\subsection{Container basierte Virtualisierung}
+Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsansatz auf Betriebssystem Ebene, bei dem der Host (Gastgeber)-Kernel (Der Kernel ist so zu sagen der Kern eines Betriebssystems, der die Schnittstelle zur Hardware bildet und für die Ressourcenverwaltung grundverantwortlich ist) zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \glqq Container \grqq{} bezeichnet. Linux-V Server\cite{Overview2018PaperLinux-VServer}, Open VZ\cite{IndexOpenvz.org} und Linux Container(LXC)\cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Ansatzes. Die allgemeine Architektur einer Container-basierten virtualisierungs Lösung ist in Abbildung \ref{fig:architecture} dargestellt. Container basierte Virtualisierung erfolgt auf Betriebssystem Ebene, so dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Sie stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen zur Verfügung. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des LXC und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die Linux cgroups (Controll Groups) Ressourcenverwaltungseinrichtungen\cite{Heo2015ControlV2} als Grundlage und fügt POSIX file Capabilities\cite{Overview2018PaperLinux-VServer} hinzu, um die Ressourcen unter den Containern einzuschränken. 
 
 
 \vspace{1em}
@@ -23,7 +23,7 @@ Dank der Einführung von Kernel Namespaces ist es möglich, Ressourcen des Host-
 
 Durch Namespaces werden die Ressourcen des Host system in Verschiedene Instanzen gepackt. Der innerhalb eines Namespaces gestartete Prozessaufruf sieht nur seine Eigene Instanz und die unterliegende Baumstruktur seiner Kindprozesse. Der Prozess selbst hat die Illusion der Vollständigen Ressourcen Kontrolle über das komplette System, wobei Ihm nur ein zugewiesener Teil zur Verfügung steht.
 
-Aktuell existieren sechs verschiedene Namensräume, PID Namespace, Mont-Namespace, UTS-Namespace, IPC-Namespace, Network namespace, und User-Namespace. Jeder dieser Namespaces hat die Aufgabe einen Bereich für die Bildung eines Neuen Prozess zu Isolieren. In verbindung mit den cgroups wird ein neuer komplett Isolierter Container Geboren.
+Aktuell existieren sieben verschiedene Namespaces, PID-Namespaces, Mont-Namespaces, UTS-Namespaces, IPC-Namespaces, Network-namespaces, User-Namespaces und cgroup-Namespaces. Jeder dieser Namespaces hat die Aufgabe einen Bereich für die Bildung eines Neuen Prozess zu Isolieren. In verbindung mit den Linux cgroups wird ein neuer komplett Isolierter und gegebenenfalls limitierter Container Geboren.
 
 Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten Container-Prozess-Umgebung ist in Abbildung \ref{fig:PID} dargestellt. \cite{Liebel2017SkalierbareContainer-Infrastrukturen}
 
@@ -35,18 +35,20 @@ Die vereinfachte Darstellung des PID Namespaces einer gespawnten bzw geforkten C
 	\label{fig:PID}
 \end{minipage}
 
-\subparagraph{PID-Namespace} ist hierarchisch[X] deshalb kann ein Prozess nur die anderen Prozesse in seinem eigenen Namensraum oder in seinen untergeordneten Namensräumen sehen. Folglich kann der Host die Prozesse innerhalb des neuen PID-namespace des Containers beobachten und beeinflussen, aber die Prozesse innerhalb des Containers können die anderen Prozesse, die im Host oder in anderen Containern laufen, nicht beobachten oder beeinflussen
+\subparagraph{PID-Namespaces} sind hierarchisch deshalb kann ein Prozess nur die anderen Prozesse in seinem eigenen Namensraum oder in seinen untergeordneten Namensräumen sehen. Folglich kann der Host die Prozesse innerhalb des neuen PID-namespace des Containers beobachten und beeinflussen, aber die Prozesse innerhalb des Containers können die anderen Prozesse, die im Host oder in anderen Containern laufen, nicht beobachten oder beeinflussen
 
-\subparagraph{Mount-Namespace} isoliert filesystem Mountpunkte, die von einem Container gesehen werden, so dass Prozesse in verschiedenen Containern unterschiedliche Ansichten der file Systemhierarchie haben können.
+\subparagraph{Mount-Namespaces} isoliert filesystem Mountpunkte, die von einem Container gesehen werden, so dass Prozesse in verschiedenen Containern unterschiedliche Ansichten der file Systemhierarchie haben können.
 
-\subparagraph{UTS-Namespace} erlaubt es jedem Container seinen eigenen Hostnamen und NIS-Domänennamen zu haben.
+\subparagraph{UTS-Namespaces} erlaubt es jedem Container seinen eigenen Hostnamen und NIS-Domänennamen zu haben.
 
-\subparagraph{IPC-Namespace} isoliert die Interprozesskommunikation, das bedeutet Prozesse, die in einem Container enthalten sind, haben eigene Nachrichten Warteschlangen und sind völlig unabhängig von Prozessen in anderen Containern.
+\subparagraph{IPC-Namespaces} isoliert die Interprozesskommunikation, das bedeutet Prozesse, die in einem Container enthalten sind, haben eigene Nachrichten Warteschlangen und sind völlig unabhängig von Prozessen in anderen Containern.
 
-\subparagraph{Network namespace} isoliert das Netzwerk-Untersystem wie z.B. Geräte und IP-Adressen. Jeder Container unterhält seine eigene Netzwerk Konfiguration und die darauf laufenden Anwendung.
+\subparagraph{Network-Namespaces} isoliert das Netzwerk-Untersystem wie z.B. Geräte und IP-Adressen. Jeder Container unterhält seine eigene Netzwerk Konfiguration und die darauf laufenden Anwendung.
 
-\subparagraph{User-Namespace} isoliert Benutzer-IDs vom Host und anderen laufenden Containern. Das bedeutet, dass der Benutzer root (ID0) innerhalb eines Containers volle Privilegien hat, aber keine Privilegien außerhalb, was Sicherheit und Zuverlässigkeit gewährleistet. \cite{Xavier2015AClouds}
-	
+\subparagraph{User-Namespaces} isoliert Benutzer-IDs vom Host und anderen laufenden Containern. Das bedeutet, dass der Benutzer root (ID0) innerhalb eines Containers volle Privilegien hat, aber keine Privilegien außerhalb, was Sicherheit und Zuverlässigkeit gewährleistet. \cite{Xavier2015AClouds}
+
+\subparagraph{cgroup-Namespaces}
+Isoliert cgroups untereinander, dass keine Informationen über vorhandene Systemressourcen geteilt werden können.
 
 
 
@@ -106,7 +108,7 @@ Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werd
 Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle. Die Gewichtung gibt die relative IO-Zeit and, die die cgroup in Bezug auf ihre Geschwister verwenden kann.
 
 \pagebreak
-\subsection{Virtuelle Maschine}
+\subsection{Hypervisor basierte Virtualisierung}
 Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors (VMM)/Hypervisor eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abbildung \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Die Grundanforderung eines VMM sind nach Popek/Goldberg (1974) \cite{Popek1974FormalArchitectures,Glatz2015Betriebssysteme} :
 
 \subparagraph{Ausführungsumgebung}
