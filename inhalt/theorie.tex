@@ -111,15 +111,17 @@ Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller ver
 \subsection{Virtuelle Maschine}
 Eine Virtuelle Maschine Bildet mit Hilfe des Virtuellen Maschinen Monitors (VMM)/Hypervisor eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abbildung \ref{fig:architecture}). Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder "Bare-Metal-Hypervisor" genannt, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM "gehosteter Hypervisor" welcher eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Die Grundanforderung eines VMM sind nach Popek/Goldberg (1974) \cite{Popek1974FormalArchitectures,Glatz2015Betriebssysteme} :
 
-\subparagraph{Ausführungsumgebung}
-Prozesse welche auf der Virtuellen Maschine gestartet wurden, laufen mit Ausnahme der Geschwindigkeit identisch ab, wie Prozesse auf einem originalen Host-System.
 
-\subparagraph{Effizienz}
-Die meisten Prozesse werden von der Hardware direkt ausgeführt ohne eingreifen des VMM
+ \subparagraph{Ausführungsumgebung} 
+ Prozesse welche auf der Virtuellen Maschine gestartet wurden, laufen mit Ausnahme der  Geschwindigkeit identisch ab, wie Prozesse auf einem originalen Host-System.
+ 
+\subparagraph{Effizienz} 
+Die meisten Prozesse werden von der Hardware direkt ausgeführt ohne eingreifen des VMM.
 
-\subparagraph{Ressourcenverwaltung}
-
+\subparagraph{Ressourcenverwaltung} 
 Es darf kein Prozess Ressourcen verwalten. Bei jedem zugriffsversuch eines Prozesses auf Systemressourcen wird der VMM aufgerufen.
+
+
 
 \subsubsection{Typ-1-VMM}
 Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrechten und stellt ein Betriebssystem dar (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} a). Der VMM kümmert sich um die Ressourcenverwaltung und die Isolierte Bereitstellung von Virtuellen Maschinen. Die Aufteilung der Rechenzeit (CPU) und die Zuteilung von Speicher auf die einzelnen VMs sind Beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt. VMware ESX \cite{Go-to2018ESXi} verwendet diesen Virtualisierungs Ansatz, der nur mit einem eigenen auf die Hardware zugeschnittenen Treiber laufen kann \cite{Glatz2015Betriebssysteme}.
