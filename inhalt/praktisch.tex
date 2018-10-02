@@ -65,13 +65,13 @@ Wenn die Memory-Page Größe multipliziert mit der Anzahl an verwendeten Memory-
 Deutlich zu erkennen sind die exat aufeinanderliegeneden Messwerte der Cgroup und der Memory Pages. Ab 8200MB schießen die allocierten Memory Pages bis ca 10200MB über das Limit hinaus. Erkennbar ist auch die geringere Allocationsrate sofort nach dem Überlauf auf 2000MB/s fällt. Komplett ignoriert wurde das Limit allerdings nicht. Verglichen mit Abbildung \ref{fig:001_mem_usage_No_Limit_Cgroup_RDY_FOR_USE} war noch genügend Speicher im System vorhanden. Wieso wurde der Prozess dann überhaupt schon beendet, warum konnte er über das Limit hinaus allokieren, wie verhält sich ein Container wenn er nur ein wenig über das Limit geht, wie wirkt sich das auf andere Container im System aus?
 
 \subparagraph{Test04}
-Um auf die aufgekommenen Fragen in Paragraph "Ergebnis Test03" hin zu arbeiten, benötigen wird nun ein Container der für eine gewisse Zeitspanne läuft und etwas mehr als das gesetzte Limit allociert benötigt. Der in Listing \ref{01mem} gezeigte C-Code wurde zu Listing \ref{02mem} verändert. 
+Um auf die aufgekommenen Fragen hin zu arbeiten, wird nun ein Container der für eine gewisse Zeitspanne läuft und etwas mehr als das gesetzte Limit allociert benötigt. Der in Listing \ref{01mem} gezeigte C-Code wurde zu Listing \ref{02mem} verändert. 
 
 \vspace{1em}
 \lstinputlisting[caption=einfacher C-Code, label=02mem, basicstyle=\ttfamily\scriptsize]{code/02mem.txt}
 
 \subparagraph{Erwartungshaltung Test 04}
-Nachdem der Malloc(sizeof(int)*1024) befehl nun 2200001 mal ausgeführt wird, ein Integer 4Byte groß ist *1024 sind 4KB pro Ausführung, sollte der Graph der Memory Pages bei etwa 8600MB verharren und 60 Sekunden diesen Wert halten.
+Nachdem der Malloc(sizeof(int)*1024) befehl nun 2200000 mal ausgeführt wird, ein Integer 4Byte groß ist *1024 sind 4KB pro Ausführung, sollte der Graph der Memory Pages bei etwa 8600MB verharren und 60 Sekunden diesen Wert halten.
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -110,7 +110,7 @@ Die verwendbaren Systemressourcen liegen nach Abbildung \ref{fig:001_mem_usage_N
 \subparagraph{Ergebnis Test05}
 Nach Betrachtung von Abbildung \ref{fig:006_mem_usage_8200mb_limit_Container01_mit_ipact_RDY_FOR_USE} ist zu erkennen, dass Container01 nicht nach ca. 63 Sekunden geplant beendet wurde, sondern schon etwa nach ca 38 Sekunden. Was die oben genannte Hypothese nicht erfüllt.
 
-Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE} zeigt was passiert ist. kurz nach dem Start von Container 02 als dieser ca 5100MB Speicher Allociert hat, wird Container 01 beendet. Container 02 erreicht das Limit von 8200MB nach ca. 41 Sekunden und wird nach ca. 42,5 Sekunden ebenfalls beendet.
+Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE} zeigt was passiert ist. kurz nach dem Start von Container 02 als dieser ca 5100MB Speicher Allociert hat, wird Container 01 beendet. Container 02 überschreitet das Limit von 8200MB nach ca. 41 Sekunden und wird nach ca. 42,5 Sekunden ebenfalls beendet.
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -120,8 +120,7 @@ Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FO
 	\label{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE}
 \end{minipage}
 
-Deutlicher zu sehen ist in Abbildung \ref{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS} wie die einzelnen Graphen verlaufen. 
-
+Deutlicher zu sehen ist in Abbildung \ref{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS} wie die einzelnen Graphen verlaufen. Am auffälligsten ist die große Lücke (mit gestrichelten Linien gekenzeichnet) in der Mitte der Abbildung. Eine Lücke entsteht, wenn über mehrere Millisekunden keine Messwerte vom Skript erfasst werden konnten. In diesem Fall ist das auf eine Systemüberlastung zurück zu führen, welche durch die Überlastung des Arbeitsspeichers und die dadurch eingeleiteten Systemreaktionen entstanden ist. 
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -131,4 +130,38 @@ Deutlicher zu sehen ist in Abbildung \ref{fig:008_mem_usage_8200mb_limit_Contain
 	\label{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS}
 \end{minipage}
 
-\pagebreak
+
+
+Eine der Systemreaktionen ist das sogenannte "Paging". Beim Paging werden Allokierte aber aktuell nicht verwendete Memory Pages vom Arbeitsspeicher auf den Massenspeicher geladen. An der Blauen Linie "Cgroup memory usage Container01" in Abbildung \ref{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS} ist nach ca. 38.5 Sekunden ein Abwertstrend zu erkennen. Zu diesem Zeitpunkt hat das Betriebssystem mit dem Paging begonnen und lädt von der Cgroup allokierte Pages in den Massenspeicher. Die Tatsächliche menge an von der Cgroup Allokiertem Arbeitsspeicher wird weniger. Die Rote Linie "Memory pages Container01" zeigt die Summe aller vom Prozess Allokierten Memory Pages, folglich auch den auf den Massenspeicher Ausgelagerten Anteil. Der Verlauf der Grünen Linie "Memory pages Container02" ist einfach nachzuvollziehen. Wegen der Erhöhten Anforderung an das I/O System was das Paging zu verantworten hat, verringert sich die Allocationsrate. Nach dem beenden von Container01, was auch das Paging beendet, verläuft die Steigung ähnlich schnell wie kurz nach dem Start des Prozesses. 
+
+\subparagraph{Test06}
+Bisher wurden Container betrachtet, die sich nicht an das vorgegebene Limit gehalten haben. Im folgenden gilt es zu zeigen, dass auch bei "gutartigen" Containern, also Container welche sich immer unter dem vorgegebenen Limit befinden, ähnliche Effekte auftreten. Für den folgenden Testdurchlauf wurde der in Listing \ref{02mem} gezeigte C-Code verwendet und Zeile 8 durch Listing \ref{03mem} ersetzt. Zuerst startet Container03 der den neu generierten C-Code ausführt. Während der 60 Sekunden Sleep Phase startet Container04 auch mit dem in Container03 verwendeten Code.
+
+\vspace{1em}
+\lstinputlisting[caption=einfacher C-Code, label=03mem, basicstyle=\ttfamily\scriptsize]{code/03mem.txt}
+
+\subparagraph{Erwartungshaltung Test 06}
+Durch die Änderung auf 2048000 Wiederholungen des Malloc Befehls, wird Container03 bis ca. 8000MB Speicher Allokieren. Nach dem Start von Container04 wird ein ähnlicher Graphen verlauf erwartet wie im vorherigen Test. Da das gesetzte Hard Limit bei 8200MB nicht überschritten wird, sollten die Linien "Cgroup memory usage Container04" und "Memory Pages Container04" identische über die Lebensdauer des Containers verlaufen.
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE.png}
+	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Memory usage Cgroup 8200MB Limit}
+	\label{fig:009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE}
+\end{minipage}
+
+\subparagraph{Ergebnis Test06}
+Der Verlauf von Container03 in Abbildung \ref{fig:009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE} war Container01 in Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE} sehr ähnlich. Bei der Allokation unter dem gesetzten Limit zeigt die In Abbildung \ref{fig:009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE} Grün dargestellte Linie der Cgroup einen unterschied zu der Dunkelroten Linie der Memory pages von Container04. 
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/010_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE_Focus.png}
+	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Memory usage Cgroup 8200MB Limit}
+	\label{fig:010_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE_Focu}
+\end{minipage}
+
+Betrachtet man in Abbildung \ref{fig:010_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE_Focu} die Blaue Linie "Cgroup memory usage Container03" und die Dunkel Rote Linie "Cgroup memory usage Container04" fällt auf, dass das Betriebssystem nach ca 33,5 Sekunden mit dem Paging angefangen hat und Einfluss auf die Cgroups beider Container nimmt. 
+
+\pagebreak 

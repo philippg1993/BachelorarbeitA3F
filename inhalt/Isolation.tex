@@ -1,6 +1,11 @@
 \thispagestyle{empty}
 \section{Isolation}
+Dank der Erkenntnisse im Praktischen Abschnitt kann in dieser Section auf den Isolations unterschied der Virtualisierungsmethoden eingegangen werden.
 
+\subsection{Container}
+In dieser Arbeit wird ausschließlich Linux verwendet, weshalb auf die Eigenschaften im Linux Kernel eingegangen wird. In einem anderen Betriebssystem können einzelne Punkte unterschiedlich implementiert sein. Die Speicher Verwaltung im Container System übernimmt das darunter liegende Betriebssystem. Weil viele Anwendung Speicher anfragen, bevor sie Ihn verwenden, wurde der Linux kernel mit einer "Over commit" lösung ausgestattet um Ressourcen effizient zu nutzen. Over commit bedeutet einfach übersetzt Überschulden. Mit dieser Methode wird speicher virtualisiert indem anfragen von Anwendungen immer akzeptiert werden. Dadurch vergibt der Kernel mehr Speicher als auf der Hardware tatsächlich vorhanden ist. Die Anwendungen bekommen genau so viele Hardwareressourcen, die sie Aktuell verbrauchen. Mit diesem System kann es vorkommen, dass mehr Ressourcen benötigt werden als Real vorhanden sind. 
+
+\subsection{Virtuelle Maschine}
 Das Ziel der Prozessisolation ist es, zu verhindern, dass Container untereinander beeinflussbar sind. Dieses Unterfangen ist mit Hilfe der sogenannten "namespaces" möglich. Die Ressourcen Isolation gewährleistet, dass Prozesse nur einen zugeteiltet anteil einer verfügbaren Ressource verwenden können, dies gelingt mit Hilfe der Cgroups.
 
 

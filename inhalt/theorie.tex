@@ -55,11 +55,11 @@ Isoliert cgroups untereinander, dass keine Informationen über vorhandene System
 \subsubsection{cgroup}
 \glqq c-group\grqq{} steht für \glqq contol group\grqq{}. Durch cgroup ist es möglich, eine Reihe von Kriterien anzuwenden, um Ressourcen wie Speicher,Netzwerk, Festplatten-I/O und CPU einzuschränken. Ein Container sollte seine auferlegten Beschränkungen nicht überschreiten und andere Container, die auf derselben Hardware laufen, nicht stören. Cgroup ist für die Ressourcen Begrenzung, Priorisierung, Abrechnung und Kontrolle zuständig.
 
-cgroup ist ein Mechanismus, um Prozesse und System Ressourcen entlang der Hierarchie in einer kontrollierten und konfigurierbaren weise hierarchisch zu organisieren. cgroup besteht im Wesentlichen aus zwei Teilen, dem Kern und dem Controller. Der cgroup Kern ist in erster Linie für die hierarchische Organisation von Prozessen zuständig. Der cgroup Controller ist in der Regel für die Verteilung einer bestimmten Art von System Ressource entlang der Hierarchie verantwortlich. Cgroup bilden eine Baumstruktur und jeder Prozess im System gehört genau zu einer cgroup. Alle Unterprozesse (Kind Prozesse) eines Prozesses (Eltern Prozess) gehören zur gleichen cgroup. Alle neu erstellten Prozesse gehören zu der cgroup zu der auch der Eltern Prozess gehört.\cite{Heo2015ControlV2} 
+durch cgroup gibt es ein Weg, um Prozesse und System Ressourcen entlang der Hierarchie in einer kontrollierten und konfigurierbaren weise hierarchisch zu organisieren. cgroup besteht im Wesentlichen aus zwei Teilen, dem Kern und dem Controller. Der cgroup Kern ist in erster Linie für die hierarchische Organisation von Prozessen zuständig. Der cgroup Controller ist in der Regel für die Verteilung einer bestimmten Art von System Ressource entlang der Hierarchie verantwortlich. Cgroup bilden eine Baumstruktur und jeder Prozess im System gehört genau zu einer cgroup. Alle Unterprozesse (Kind Prozesse) eines Prozesses (Eltern Prozess) gehören zur gleichen cgroup. Alle neu erstellten Prozesse gehören zu der cgroup zu der auch der Eltern Prozess gehört.\cite{Heo2015ControlV2} 
 
 
 \paragraph{Ressourcen Verteilungs Modelle}
-Cgroup Controller verfügen über verschiedene Ressourcen Verteilungs Modelle. Die Modelle sind auf die Art und den Verwendungszweck der Ressource zugeschnitten. Dieser Paragraph befasst sich mit den verschiedenen Hauptschemen und deren Aufgaben.
+Cgroup Controller verfügen über verschiedene Ressourcen Verteilungs Modelle. Die Modelle sind auf die Art und den Verwendungszweck der Ressource zugeschnitten. Dieser Paragraph befasst sich mit den verschiedenen Hauptschemen und deren Aufgaben \cite{Heo2015ControlV2}.
 
 \subparagraph{Weight}
 Die Ressourcen eines Prozesses werden Proportional an alle aktiven Kind Prozesse verteilt. Da nur die aktiven Kind Prozesse welche aktuell Ressourcen benötigen an der Verteilung teilnehmen, werden die zugeteilten Ressourcen effizient genutzt. 
@@ -102,7 +102,7 @@ Wenn der Speicherverbrauch einer cgroup diese Grenze erreicht und nicht reduzier
 \subparagraph{CPU}
 Der CPU Controller reguliert die Verteilung der CPU-Zyklen. Diese Steuerung Verwendet Gewichtung und Limit Modelle für normale Ressourcen Verteilung und das Allocation Modell für eine Echtzeit Verteilung.
 
-Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werden, da sich die Leistung der CPU aus Energie Effizienz gründen an die Auslastung anpasst.
+Die CPU kann nicht auf einen genauen gleichbleibenden Prozentwert angegeben werden, da sich die Leistung der CPU aus Energie Effizienz gründen an die Auslastung anpasst. Deshalb wird ein Richtwert angegeben.....
 
 \subparagraph{IO}
 Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle. Die Gewichtung gibt die relative IO-Zeit and, die die cgroup in Bezug auf ihre Geschwister verwenden kann.
