@@ -1,7 +1,36 @@
 \thispagestyle{empty}
 \section{Praktische Durchführung}
 \subsection{Hardware}
+
+
+\pagebreak
 \subsection{Docker}
+Die Docker Container Technologie wurde 2013 als Open Source Docker Engine eingeführt. Basierend auf Linux Container Konzepten nutz auch Docker Namespaces und C-groups zur Isolierung und Limitierung von Containern.  
+
+\subparagraph{Docker Engine}
+Docker ist eine client-server application. Der Docker client kommuniziert mit dem Docker Server oder auch Docker Deamon genannt, der die ganze Arbeit macht. Manchmal wird der Docker Deamon auch Docker Engine genannt. Es ist möglich den Docker Deamon und den Docker client auf dem selben Host laufen zu lassen, oder den localen Docker client mit dem Docker deamon auf einem anderen Host zu verbinden. Die Docker Architektur ist in Abbildung \ref{fig:Docker_Server_Client.PNG} zu sehen\cite{Turnbull2015TheBook}.
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/Docker_Server_Client.PNG}
+	\captionof{figure}[Docker Architektur\cite{Turnbull2015TheBook}]{Memory usage Cgroup 8200MB Limit}
+	\label{fig:Docker_Server_Client.PNG}
+\end{minipage}
+
+\subparagraph{Docker Images}
+Images sind die Bausteine der Docker welt. Container werden von Images gestartet. Images sind ein mehrschichtiges Format, die unter Verwendung von Union-Dateisystemen Schritt für Schritt anhand unterschiedlicher Instruktionen erstellt werden.Als Quellcode der Container können Images betrachtet werden. Sie sind einfach verschiebbar und können in Registern verwaltet werden.
+
+\subparagraph{Registries}
+Docker speichert die erstellten Images in Registern. Es gibt zwei Arten von Registern: Öffentliche und private. Docker verwaltet die öffentlichen Images im Docker Hub\cite{DockerInc.2016DockerHub}. Auf Docker Hub können eigene Images abgespeichert und geteilt werden. Diese Plattform beinhaltet bereits Zehntausende Images die von anderen Leuten erstellt wurden, die für eigene Verwendungen zur Verfügung stehen. Private Images kann man ebenfalls auf Docker Hub abspeichern und niemand außer einem ausgewählten Personenkreis hat zugriff darauf.
+
+\subparagraph{Docker Containers}
+Docker hilft beim erstellen und ausführen von Containern. Container werden von Images ausgeführt und können einen oder mehrere Prozesse beinhalten. Images können als der aufbau Prozess von Docker gesehen werden und Container als die ausführende Instanz von Docker.
+
+Docker leiht sich das Konzept des standard Shiff Containers die für den Transport von Waren eingesetzt werden als ein Modell für Docker Container, mit dem Unterschied, dass Docker Container keine Waren sondern Software transportiert. Container können in jeglicher Umgebung ausgeführt werden. Ob auf dem Laptop, nach dem Download von Docker Hub auf einem web server, einem Datenbank- oder auf einem Applikationsserver die Container werden geladen, wie jeder andere Container auch.
+
+\pagebreak
+
 \subsection{Realisierung}
 Im Linux-File-System ist es möglich cgroups über PID's ausfindig zu machen und die verwendeten Ressourcen auszugeben. Was zu der Idee führte, einen neuen Docker-Container zu erstellen, in diesem einen Prozess mit einem einfachen malloc() befehlt in einer Endlosschleife auszuführen und die menge des allokierten Speichers der cgroup auszuwerten. 
 
