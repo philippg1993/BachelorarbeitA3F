@@ -124,7 +124,7 @@ Es darf kein Prozess Ressourcen verwalten. Bei jedem zugriffsversuch eines Proze
 
 
 \subsubsection{Typ-1-VMM}
-Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrechten und stellt ein Betriebssystem dar (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} a). Der VMM kümmert sich um die Ressourcenverwaltung und die Isolierte Bereitstellung von Virtuellen Maschinen. Die Aufteilung der Rechenzeit (CPU) und die Zuteilung von Speicher auf die einzelnen VMs sind Beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt. VMware ESX \cite{Go-to2018ESXi} verwendet diesen Virtualisierungs Ansatz, der nur mit einem eigenen auf die Hardware zugeschnittenen Treiber laufen kann \cite{Glatz2015Betriebssysteme}.
+Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrechten und stellt ein Betriebssystem dar (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} a). Der VMM kümmert sich um die Ressourcenverwaltung und die Isolierte Bereitstellung von Virtuellen Maschinen. Die Aufteilung der Rechenzeit (CPU) und die Zuteilung von Speicher auf die einzelnen VMs sind Beispiele der Aufgaben welche die Ressourcenverwaltung übernimmt. Xen, VMware ESX \cite{Go-to2018ESXi} verwendet diesen Virtualisierungs Ansatz, der nur mit einem eigenen auf die Hardware zugeschnittenen Treiber laufen kann \cite{Glatz2015Betriebssysteme}.
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
@@ -135,7 +135,7 @@ Der Bare-Melat-Hypervisor Liegt direkt auf der Hardware mit vollen Zugriffsrecht
 \end{minipage}
 
 \subsubsection{Typ-2-VMM}
-Ein gehosteter-Hypervisor teilt sich ein Gastgeberbetriebssystem(Host-Betriebssystem) mit anderen Applikationen (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} b). Um die nötigen Rechte auf der Hardware zu erhalten, wird ein spezieller VMM-Treiber verwendet, der direkt unter dem Host-system installiert wird. Dieser ermöglicht Privilegierte Zugriffsrechte auf den Kernel. VMware Workstation, Virtual-Box und Xen sind Produkte dieser Realisierung der Virtualisierung \cite{Glatz2015Betriebssysteme}.
+Ein gehosteter-Hypervisor teilt sich ein Gastgeberbetriebssystem(Host-Betriebssystem) mit anderen Applikationen (siehe Abbildung \ref{fig:Hypervisor_Typ1/Typ2} b). Um die nötigen Rechte auf der Hardware zu erhalten, wird ein spezieller VMM-Treiber verwendet, der direkt unter dem Host-system installiert wird. Dieser ermöglicht Privilegierte Zugriffsrechte auf den Kernel. VMware Workstation und Virtual-Box sind Produkte dieser Realisierung der Virtualisierung \cite{Glatz2015Betriebssysteme}.
 
 \subsubsection{Hybridformen}
 
@@ -145,7 +145,7 @@ Hypervisors die von Haus aus direkt in das Betriebssystem integriert wurden, sin
 \subsubsection{Rechteverwaltung}
 Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemeinsam: Einige Befehle, die das Gastsystem an die CPU sendet, müssen von der Virtualisierungsschicht (Hypervisor) abgefangen und interpretiert werden \cite{Meinel2011VirtualisierungMarktubersicht}. Das geschieht entweder über \glqq binary translation \grqq{} oder Via Hypercalls.  Es gibt bei aktuellen Prozessoren eine Rechteverwaltung welche man als Ringdiagramm darstellen kann (siehe Abbildung \ref{fig:Ringmodell1} b).Im Ring 0 Besitzt man Volle Zugriffsrechte auf Hardware Ressourcen, auf dieser Ebene ist der Kernel beheimatet. Die Ringe 1 und 2 stehen für Treiber zur Verfügung und im Ring 3 Stehen alle sonstigen Anwendungen. Die Kernel der Gastbetriebssysteme befinden sich ebenfalls in dem 3. Ring.
 
-\subparagraph{Vollständigevirtualisierung}
+\subparagraph{Vollständige-Virtualisierung}
  Wenn eine Anwendung direkt auf einen Speicherbereich zugreifen will, der vom Host-Kernel reserviert ist, tritt eine Speicherschutzverletzung auf und der Zugriff wird verweigert, was den Prozess abstürzen lässt. Der Hypervisor fängt solche kritischen Anfragen ab, überprüft diese, Codiert die Anfragenstellung gegebenenfalls um und führt sie selbst mit Höheren Zugriffsrechten aus. Nach dem Aufruf folgt eine entsprechende Rückübersetzung und Rückabe an die aufrufende virtuelle Maschine. Dieser Vorgang heist \glqq binary translation \grqq{} und muss sehr häufig durchgeführt werden, was zu einem erheblichen Overhead führt, der signifikante Leistungseinbußen zur Folge hat. Der Ansatz der vollständigen Virtualisierung benötigt keine spezielle Hardware \cite{Meinel2011VirtualisierungMarktubersicht}. 
  
  \vspace{1em}
@@ -156,7 +156,7 @@ Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemein
 	\label{fig:Ringmodell1}
 \end{minipage}
  
- \subparagraph{Paravirtualisierung}
+ \subparagraph{Para-Virtualisierung}
  Um Hypercalls ausführen zu können, benötigt man eine Paravirtuallisierung. Hierzu müssen die Kernel der Gastbetriebssysteme so angepasst werden, dass diese auf Ring 1 laufen können (siehe Abbildung \ref{fig:Ringmodell2}). Aus Systemaufrufen werden nun Hypercalls, die direkt an den Hypervisor und nicht wie vorher an das Host-System gesendet werden. Der Hypervisor führt den entsprechenden Systemaufruf aus und bedient die aufrufende virtuelle Maschine \cite{Meinel2011VirtualisierungMarktubersicht}. Um diese Effizientere Methode der Virtualisierung zu verwenden, ist darauf zugeschnittene Hardware nötig.
 
  \vspace{1em}
@@ -167,8 +167,8 @@ Egal, welche Methode der Virtualisierung zum Einstz kommt, eins haben sie gemein
 	\label{fig:Ringmodell2}
 \end{minipage}
  
-\subparagraph{Hardwareunterstützung}
-Durch die Hardware Unterstützung von Intel VT\cite{TechnologyIntel} oder AMD-v\cite{AMDVirtualisierungstechnologie} die den Prozessor-Befehlssatz erweitern, können virtuelle Maschinen System Calls nativ ausführen ohne die Kerne der Gastbetriebssysteme zu modifizierne, wie es bei der Paravirtualisierung gemacht wird. Die Hardwareunterstützte Variante ist die Performanteste Methode der Hypervisor technologien \cite{Meinel2011VirtualisierungMarktubersicht}.
+\subparagraph{Hardwareunterstützte-Virtualisierun}
+Durch die Hardware Unterstützung von Intel VT-x\cite{TechnologyIntel} oder AMD-v\cite{AMDVirtualisierungstechnologie} die den Prozessor-Befehlssatz erweitern, können virtuelle Maschinen System Calls nativ ausführen ohne die Kerne der Gastbetriebssysteme zu modifizierne, wie es bei der Paravirtualisierung gemacht wird. Die Hardwareunterstützte Variante ist die Performanteste Methode der Hypervisor technologien \cite{Meinel2011VirtualisierungMarktubersicht}.
 
 
 
