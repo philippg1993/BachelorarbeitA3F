@@ -11,6 +11,13 @@ penVZ bietet eine ähnliche Funktionalität wie Linux-VServer. Es basiert jedoch
 \subparagraph{Linux Container}
 Ähnlich wie Open VZ verwendet LXC Kernel-Namespaces, um die Ressourcenisolierung zwischen allen Containern zu gewährleisten. Während des Container Starts, werden stanardmäßig PIDs, IPCs und Mount Points virtualisiert und über den PID-Namespace, den IPC-Namespace bzw. den Mount-Namespace isoliert. Um mit der Außenwelt zu kommunizieren und die Netzwerkisolierung zu ermöglichen, werden verwendet LXC die Nezwerk-Namespaces. Im gegensatz zu Linux-VServer und OpenVZ ist die Ressourcenverwaltung nur über Cgroups erlaubt. Die Prozesskontrolle wird ebenfalls über Cgroups durchgeführt. I/O Operationen sind wie in OpenVZ ebenfalls durch den CFQ-scheduler gesteuert \cite{IndexLinuxcontainers.Org} \cite{Xavier2015AClouds}.
 
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=1\linewidth]{pics/Virtualisierungen_Hypervisor.PNG}
+	\captionof{figure}[Virtualisierungen Hypervisor]{Virtualisierungen Hypervisor \cite{Fayyad-Kazan2013BenchmarkingHypervisors}}
+	\label{fig:Virtualisierungen_Hypervisor}
+\end{minipage}
 
 \subparagraph {Xen}
 Xen ist eine Virtualisierungslösung, die ursprünglich an der University of Cambridge entwickelt wurde. Xen ist die einzige Bare-Metal-Lösung, die als Open Source als Grundlage für eine Reihe verschiedener Kommerzieller und Open-Source-Anwendungen dient. Xen besteht aus mehreren Komponenten, die zusammenwirken, um eine Virtualisierungsumgebung bereitzustellen. Die Hauptbestandteile sind Xen-Hypervisor, Domain0 Gast (Dom0) und DomainU Gast (DomU), die entweder Para-Virtualisiert, Vollständig-Virtualisert oder Hardwareunterstützt-Virtualisiert sein können. Der Xen-Hypervisor ist eine Softwareschicht, die direkt auf der Hardware unter allen Betriebssystemen läuft. Er ist für das CPU-Scheduling und die Speicherpartitionierung der verschiedenen VMs die auf der Hardwarevorrichtung laufen zuständig. Wenn Xen startet, übernimmt der Xen-Hypervisor die Kontrolle über das System und lädt das erste Gastbetriebssystem auf Dom0. Dom0 ist ein modifizierter Linux-Kernel, der eine einzigartige Virtuelle Maschine darstellt und auf dem Xen-Hypervisor mit speziellen Zugriffsrechten auf physische I/O-Ressourcen, sowie die Interaktion mit anderen virtuellen Maschinen läuft. Die auf der DomU ausgeführten modifizierten Betriebssysteme, besitzen keinen direkten Zugriff auf physische Daten.Seit Xen Version 3.0 ist CREDIT der Standat Xen-Scheduler um die CPU fair auf den Virtuellen Maschinen aufzuteilen. Im Credit-Scheduler wird jeder VM eine Gewichtung zugewiesen, anhand dieser werden die CPU-Ressourcen auf die Systeme verteilt\cite{Fayyad-Kazan2013BenchmarkingHypervisors}. 
