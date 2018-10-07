@@ -2,5 +2,16 @@
 \section{Fazit und Ausblick}
 
 
+Eine Kette ist nur so stark wie ihr schwächstes Glied. Ob durch einen Hacker angriff oder den Firmeninternen Administrator
+
+Container sind konzipiert um die zur Verfügung gestellte Hardware dynamisch und dadurch effizient zu nutzen. Die Overcommitlösung im Linux-Kernel ist für die Isolation unter den Containern nicht optimal, aber für die Dynamik unerlässlich. Der große unterschied zu einer Hypervisor basierten Virtualisierungsansatz ist genau dieses Overcommitment im Ressourcen-Mangement. Während ein Hypervisor nur die Ihm zur Verfügung stehenden Ressourcen vergibt und nicht die  Ressourcen Selbst virtualisiert, sonder durch die Theoretische Teilung der Hardware mehrere Virtuelle Partitionen erstellt, besteht die Virtuallisierung des Betriebssystem-Kernels aus der Virtuellen Vergrößerung des zur Verfügung stehenden Hardwarebereichs. 
+
+Mit den in dieser Arbeit dargestellten Gefahren von einer zu hohen Auslastung der Ressourcen ist es möglich fallstricke zu umgehen. Mit einer manuellen höheren Prioritätenvergabe im Falle eines OOM-Killer aufrufs von sicheren Containern bei denen die Images und die ausgeführten Programme überprüft wurden, sowie eine Niederwertigen Priorität für unkontrollierte und unwichtigere Container, können zumindest wichtige Prozesse geschützt werden.
+
+Eine Möglichkeit um die Isolation zwischen den Containern zu verstärken und die Prozesse abzusichern, ist die Veränderung des Linux-Kernels. Die Kombination aus Virtueller Maschine und Container kann eine lösung in der Automobil Industrie der Zukunft sein. Je nach sicherheitsanforderung werden verschiede Over-Commit, OOM-Killer und Prioritätenvergabe Lösungen im Modifizierten Linux-Kernel implementiert, die auf einem Hypervisor mit minimalausführung eines Betriebssystems laufen. Bei Sicherheitskritischen anwendungen wie Airbag, Bremsen oder Lenkrad wird ein Linux-Kernel so umgebaut, dass die Over-Commit Variante wie bei Hypervisoren komplett herausgenommen wird und jede Anwendung seinen Eigenen Ressourcenbereich zur Verfügung gestellt bekommt und Container dadurch untereinander Stärker abgesichert sind. Bei den Blinkern oder der Innenraumlüftung kann eine Linux-Kernel Modifikation mit geringem Over-Commint ausgestattet sein und einer zusätzlichen Priorisierungsvariante im falle eines Überlaufs. Bei Anwendungen wie Innenraumbeleuchtung Autoradio oder Navigationssystem ist die ursprüngliche Over-Commitlösung implementiert um die vorhanden Ressourcen am effizientesten zu nutzen.
+
+Aus Zeitgründen konnte in dieser Arbeit leide nicht auf alle aufgetretenen Seiteffekte eingegangen werden. 
+
+Die Deckelung der Ressourcen durch Cgroup sollte genauer betrachtet werden. Die Tatsächliche Menge an allokiertem Speicher auf der Hardware eines Prozesses kann durch das Schreiben einer Folge von Zahlen auf den Arbeitsspeicher und das Auslesen der nachvollziebaren Speicherbereiche der Cgroup Auf der Hardware und durch das Paging verursachte verschieben der Memory Pages auf dem Massenspeicher mit der geschriebenen Folge verglichen werden. Wenn ein Teil der Zahlenvolge fehlt, ist die durch Cgroup dargestellte Partition nicht eingehalten worden. 
 
 \pagebreak
