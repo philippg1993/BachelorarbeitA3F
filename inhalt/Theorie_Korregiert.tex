@@ -1,13 +1,23 @@
 \thispagestyle{empty}
 
-\section{Theorie}
+\section{Grundlagen Virtualisierung}
 
 In der Industrie geht es meist darum wie man kosten einsparen kann. Die Hardware Systeme in Firmen werden häufig nur zu einem geringen Prozentsatz ausgelastet. Neue Hardware für zusätzliche Anforderungen ist sehr teuer. Wenn es nur eine Möglichkeit geben würde auf einem System mehrere voneinander Isolierte Umgebungen zu schaffen und die schon vorhandenen Kapazitäten auszunutzen, könnten kosten durch neue Anschaffung, Platz und sogar Strom gespart werden. eine solche Möglichkeit gibt es, dank der Virtualisierung von Hardware-Ressourcen wie Speicher, CPU, I/O können Container und Virtuelle Maschinen erzeugt werden, welche die Ausführung mehrerer voneinander isolierter Prozesse ermöglicht.
 
 \pagebreak
 
-\subsection{Container}
-Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungs Ansatz auf Betriebssystem Ebene, bei dem des Host(Gastgeber)-Betriebssystem zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \glqq Container \grqq{} bezeichnet. Linux-V Server\cite{Overview2018PaperLinux-VServer}, Open VZ\cite{IndexOpenvz.org} und Linux-Container(LXC)\cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Virtualisierungs Ansatzes. Für diese Arbeit ist vor allem der Linux-Container (LXC) interessant. Die allgemeine Architektur einer Container-basierten Virtualisierungs Lösung ist in Abbildung \ref{fig:architecture} dargestellt. Container basierte Virtualisierung erfolgt wie bereits erwähnt auf Betriebssystem Ebene. Das bedeutet, dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Der Kernel ist so zu sagen der Kern eines Betriebssystems, der die Schnittstelle zur Hardware bildet und für die Ressourcenverwaltung grundverantwortlich ist. Container stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen dar. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des Linux-Container und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die Linux Cgroup (Controll Group) Ressourcenverwaltungseinrichtungen\cite{Heo2015ControlV2} als Grundlage und fügt POSIX file Capabilities\cite{Overview2018PaperLinux-VServer} hinzu, um die Ressourcen unter den Containern einzuschränken. 
+\subsection{Container-basierte Virtualisierung}
+Container-basierte Virtualisierung ist ein leichtgewichtiger Virtualisierungsansatz auf Betriebssystemebene, bei dem das Host (Gastgeber)-Betriebssystem zur Ausführung mehrerer virtueller Umgebungen verwendet wird. Diese virtuellen Umgebungen werden oft einfach als \emph{Container} bezeichnet. \emph{Linux-V} \cite{Overview2018PaperLinux-VServer}, \emph{Open VZ} \cite{IndexOpenvz.org} und \emph{Linux-Container} (LXC) \cite{IndexLinuxcontainers.Org} sind die drei wichtigsten Vertreter dieses Virtualisierungsansatzes. In dieser Arbeit wird vor allem auf den Linux-Container (LXC) eingegangen, dieser bildet die Grundlage der im Praktischen abschnitt verwendeten Softwarelösung \emph{Docker} \cite{MeineDockerPlatform}. 
+
+In Abbildung \ref{fig:architecture} sind die allgemeinen Architekturen der beiden Virtualisierungsansätze Conntainer-basierte und Hypervisor-Basierte gegenübergestellt. Die Basis beider Techniken ist die Host-Hardware, im Bild als unterster Baustein \emph{Hardware} gezeigt. In diesem Abschnitt wird im Folgenden nur die linke Seite, \emph{container-based architecture} weiter betrachtet. Container-basierte Virtualisierung erfolgt, wie bereits erwähnt, auf Betriebssystemebene. Das bedeutet, dass Container neben anderen Anwendungen auf dem Host-System laufen können, ohne dass redundante Betriebssysteme ausgeführt werden müssen. Im Bild wird dies durch den Baustein \emph{Shared Operating System} dargestellt, auf dem die Bausteine \emph{Container} aufbauen. 
+
+Container stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen dar. Als oberster Baustein \emph{App} der Container-Bausteine sind die Anwendungen dargestellt. Diese Ressourcen können entweder mit dem Host geteilt, oder separat im Container installiert werden. Container sehen von außen aus wie normale Prozesse, die auf dem \emph{Kernel} laufen. Der Kernel ist sozusagen der Kern eines Betriebssystems, der die Schnittstelle zur Hardware bildet und für die Ressourcenverwaltung grundverantwortlich ist. Der Betriebssystem-Kernel wird im Fall der Container-Virtualisierung mit den Containern geteilt. 
+
+Die Basis eines Linux-Containers sind die sogenannten \emph{Namespaces} \cite{}. Diese stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form dieser Container zur Verfügung. Der in dieser Arbeit verwendete LXC nimmt die Linux Control Group (Cgroup) \cite{Heo2015ControlV2} Ressourcenverwaltungseinrichtung als Grundlage und fügt \emph{POSIX file Capabilities} \cite{Overview2018PaperLinux-VServer} hinzu, um die Ressour-cen der verschiedenen Container einzuschränken werden.
+
+
+
+%Die allgemeine Architektur einer Container-basierten Virtualisierungs Lösung ist in Abbildung \ref{fig:architecture} dargestellt. Container basierte Virtualisierung erfolgt wie bereits erwähnt auf Betriebssystem Ebene. Das bedeutet, dass mehrere Anwendungen ohne redundante Ausführung anderer Betriebssysteme auf dem Host betrieben werden können. Container sehen von außen aus wie normale Prozesse, die auf dem Kernel laufen, der mit dem Host-Rechner geteilt wird. Der Kernel ist so zu sagen der Kern eines Betriebssystems, der die Schnittstelle zur Hardware bildet und für die Ressourcenverwaltung grundverantwortlich ist. Container stellen eine isolierte Umgebung mit den notwendigen Ressourcen für die Ausführung von Anwendungen dar. Diese Ressourcen können entweder mit dem Host geteilt oder separat im Container installiert werden \cite{Xavier2014AClusters}. Namespaces sind die Basis des Linux-Container und stellen in Verbindung mit anderen Ressourcen-Management-Systemen eine isolierte Umgebung in Form von Containern zu Verfügung. LXC nimmt die Linux Cgroup (Controll Group) Ressourcenverwaltungseinrichtungen\cite{Heo2015ControlV2} als Grundlage und fügt POSIX file Capabilities\cite{Overview2018PaperLinux-VServer} hinzu, um die Ressourcen unter den Containern einzuschränken. 
 
 
 
@@ -102,7 +112,7 @@ Der CPU Controller reguliert die Verteilung der CPU-Zyklen. Diese Steuerung Verw
 Der IO Controller reguliert die Verteilung der IO Ressourcen. Der Controller verwendet Gewichtung und Limit Modelle. Die Gewichtung gibt die relative IO-Zeit an, welche die Cgroup in Bezug auf ihre Geschwister verwenden kann.
 
 \pagebreak
-\subsection{Virtuelle Maschine}
+\subsection{Hypervisor-basierte Virtualisierung}
 Eine Virtuelle Maschine Bildet mit Hilfe des \glqq{}\emph{Virtual Machine Monitor}\grqq{} (VMM) auch Hypervisor genannt eine komplette Rechnerarchitektur auf dem Host-Rechner nach (siehe Abbildung \ref{fig:architecture}). Der Hypervisor ist ein modifizierter minimaler Betriebssystem-Kernel. Man unterscheidet zwischen zwei Arten von VMM: Dem Typ 1 VMM oder \glqq{}\emph{Bare-Metal-Hypervisor}\grqq{}, welcher direkt auf der zugrundeliegenden Hardware des Hosts liegt und dem Typ-2-VMM \glqq{}\emph{hostet Hypervisor}\grqq{}, der eine komplette virtuelle Maschine auf dem Host Betriebssystem erstellt. Die Grundanforderung eines VMM sind nach Popek/Goldberg \cite{Popek1974FormalArchitectures,Glatz2015Betriebssysteme}:
 
 
@@ -134,7 +144,7 @@ Ein gehosteter-Hypervisor teilt sich ein Gastgeberbetriebssystem(Host-Betriebssy
 \subsubsection{Hybridformen}
 Hypervisoren die von Haus aus direkt in das Betriebssystem integriert wurden, sind zwischen Typ 1 und Typ 2 anzusiedeln. Die Realisierung von Linux heißt KVM (Kernel-based Virtual Mashine), die Entwicklung von Windows ist Hyper-V. Diese Hybridformen sind die aktuell Performantesten Hypervisoren. 
 
-\subsubsection{Virtualisierungsformen}
+\subsubsection{Hypervisor Virtualisierungsformen}
 Egal, welche Methode der Virtualisierung zum Einsatz kommt, eins haben sie gemeinsam: Ressourcenanfragen die das Gastsystem an die CPU sendet, müssen von der Virtualisierungs Schicht (Hypervisor) abgefangen und interpretiert werden \cite{Meinel2011VirtualisierungMarktubersicht}. Das geschieht entweder über Vollständige-, Para- oder Hardwareunterstütze-Virtualisierung.  Es gibt bei aktuellen Prozessoren eine Rechteverwaltung welche man als Ringdiagramm darstellen kann (siehe Abbildung \ref{fig:Ringmodell1}). Im Ring 0 Besitzt man Volle Zugriffsrechte auf Hardware Ressourcen, auf dieser Ebene ist der Kernel beheimatet. Die Ringe 1 und 2 stehen für Treiber zur Verfügung und im Ring 3 wo die geringsten Zugriffsrechte enthalten sind, stehen alle sonstigen Anwendungen. Die Kernel der Gastbetriebssysteme befinden sich grundsätzlich ebenfalls in dem 3. Ring. Eine Zusammenstellung der Virtualisierungs Methoden ist in Abbildung \ref{fig:Virtualisierungen_Hypervisor} dargestellt.
 
 \subparagraph{Vollständige-Virtualisierung}
@@ -154,7 +164,7 @@ Egal, welche Methode der Virtualisierung zum Einsatz kommt, eins haben sie gemei
 \vspace{1em}
 \begin{minipage}{\linewidth}
 	\centering
-	\includegraphics[width=1\linewidth]{pics/Virtualisierungen_Hypervisor.PNG}
+	\includegraphics[width=1\linewidth]{pics/02Virtualisierungen_Hypervisor.PNG}
 	\captionof{figure}[Virtualisierungen Hypervisor]{Virtualisierungen Hypervisor \cite{Fayyad-Kazan2013BenchmarkingHypervisors}}
 	\label{fig:Virtualisierungen_Hypervisor}
 \end{minipage}
