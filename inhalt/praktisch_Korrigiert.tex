@@ -1,6 +1,18 @@
 \thispagestyle{empty}
 \section{Praktische Durchführung}
+\label{Isolation Container}
+
+In dieser Arbeit wird ausschließlich Linux verwendet, weshalb auf die Eigenschaften im Linux Kernel eingegangen wird. In einem anderen Betriebssystem können einzelne Punkte unterschiedlich implementiert sein. Die Speicherverwaltung von Containern übernimmt das darunterliegende Betriebssystem. Weil viele Anwendungen Speicher anfragen, bevor sie diesen verwenden, wurde der Linux-Kernel mit einer \emph{Over Commit}-Lösung ausgestattet, um Ressourcen effizient zu nutzen. \emph{Over Commit} bedeutet einfach übersetzt Überschulden. Mit dieser Methode wird Speicher virtualisiert, indem Ressourcensanfragen von Anwendungen an den Betriebssystem-Kernel immer akzeptiert werden. Dadurch vergibt der Linux-Kernel mehr Speicher, als auf der Hardware tatsächlich vorhanden ist. Die Anwendungen selbst bekommen genauso viele \emph{Memory Pages} auf der Hardware, wie aktuell benötigt werden. Mit diesem System kann es vorkommen, dass mehr Ressourcen benötigt werden, als real hardwarebedingt vorhanden sind. 
+
+Wenn die Ressourcen auf der Hardware knapp werden, ist \emph{Paging} die erste Reaktion des Betriebssystems. Beim paging werden allokierte Memory Pages, die aktuell nicht verwendet werden, vom Arbeitsspeicher auf den Massenspeicher geladen. Da ein Massenspeicherzugriff sehr aufwändig und langsam ist, wurde diese Möglichkeit der zusätzlichen Speichererweiterung limitiert. Auf dem in dieser Arbeit verwendetem System, liegt das Limit bei 2 GB. Wenn Paging nicht ausreicht, wird der \emph{OOM-Killer} aufgerufen. Der Out of Memory-Killer beendet anhand einer Prioritätenliste die niederwertigsten Prozesse, bis ausreichend Platz geschaffen wurde. Jeder Prozess erhält bereits bei der Erstellung eine Priorisierung in Form einer Zahl, die nach Eigenschaft und Wichtigkeit die Priorität widerspiegelt.
+
+Bei der Erstellung von Containern wird ein in der maximalen Größe definierter durch Cgroup beschränkter und durch Namespace isolierter Bereich geschaffen. Die aktuelle Größe des Bereichs hängt von den aktuell verwendeten Ressourcen ab und liegt im Regelfall unter der maximalen Begrenzung. Mehrere voneinander gut isolierte Container teilen sich ein durch das Betriebssystem verwaltetes Hardwaresystem. Wegen der Speicherverwaltung des Betriebssystems ist es möglich, dass ein Container durch einen erhöhten Speicherverbrauch mit Hilfe des OOM-Killers Einfluss auf einen anderen Container nehmen kann. Container sind somit nicht vollständig isoliert.
+
 \subsection{Hardware und Software}
+
+Das gerade beschriebene Szenario soll im praktischen Teil dieser Arbeit untersucht werden. Das daraus resultierende Ergebnis wird im letzten Abschnitt mit dem Hypervisor-Virtualisierungsansatz verglichen. Als Container-basierte Virtualisierungslösung wurde Docker ausgewählt. Docker ist aktuell die meist verbreitetste Softwarelösung für die Erstellung von Containern und basiert auf dem Prinzip der Linux-Container (LXC).
+
+
 
 
 \pagebreak

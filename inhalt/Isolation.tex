@@ -1,5 +1,6 @@
 \thispagestyle{empty}
 \section{Isolation Container}
+\label{Isolation Container}
 
 In dieser Arbeit wird ausschließlich Linux verwendet, weshalb auf die Eigenschaften im Linux Kernel eingegangen wird. In einem anderen Betriebssystem können einzelne Punkte unterschiedlich implementiert sein. Die Speicherverwaltung von Containern übernimmt das darunterliegende Betriebssystem. Weil viele Anwendungen Speicher anfragen, bevor sie diesen verwenden, wurde der Linux-Kernel mit einer \emph{Over Commit}-Lösung ausgestattet, um Ressourcen effizient zu nutzen. \emph{Over Commit} bedeutet einfach übersetzt Überschulden. Mit dieser Methode wird Speicher virtualisiert, indem Ressourcensanfragen von Anwendungen an den Betriebssystem-Kernel immer akzeptiert werden. Dadurch vergibt der Linux-Kernel mehr Speicher, als auf der Hardware tatsächlich vorhanden ist. Die Anwendungen selbst bekommen genauso viele \emph{Memory Pages} auf der Hardware, wie aktuell benötigt werden. Mit diesem System kann es vorkommen, dass mehr Ressourcen benötigt werden, als real hardwarebedingt vorhanden sind. 
 
