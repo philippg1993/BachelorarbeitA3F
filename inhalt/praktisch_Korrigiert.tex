@@ -26,7 +26,7 @@ Docker ist eine client-server Applikation. Der Docker-Client kommuniziert mit de
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/Docker_Server_Client.PNG}
-	\captionof{figure}[Docker-Architektur\cite{Turnbull2015TheBook}]{Docker Architektur}
+	\captionof{figure}[Docker-Architektur]{Docker Architektur\cite{Turnbull2015TheBook}}
 	\label{fig:Docker_Server_Client.PNG}
 \end{minipage}
 
@@ -59,7 +59,7 @@ Unter der Annahme, dass das Skript die Messwerte in ungefähr gleichmäßigen Ab
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/001_mem_usage_No_Limit_Cgroup_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup Ohne Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup ohne Limit}
+	\captionof{figure}[Endlosschleife malloc(), Speicherverbrauch einer Cgroup ohne Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup ohne Limit}
 	\label{fig:001_mem_usage_No_Limit_Cgroup_RDY_FOR_USE}
 \end{minipage}
 
@@ -77,7 +77,7 @@ Da nun ein Hard-Limit eingerichtet ist, wird die Cgroup mit der gleichen Geschwi
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/002_mem_usage_8200mb_limit_Cgroup_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup mit Limit}
+	\captionof{figure}[Endlosschleife malloc(), Speicherverbrauch einer Cgroup mit Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup mit Limit}
 	\label{fig:002_mem_usage_8200mb_limit_Cgroup_RDY_FOR_USE}
 \end{minipage}
 
@@ -98,7 +98,7 @@ Wenn die Memory-Page Größe multipliziert mit der Anzahl der verwendeten Memory
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/003_mem_usage_8200mb_limit_Cgroup_Pages_RDY_FOR_USE.png}
-	\captionof{figure}[ Endlosschleife Malloc]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit}
+	\captionof{figure}[Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit}
 	\label{fig:003_mem_usage_8200mb_limit_Cgroup_Pages_RDY_FOR_USE}
 \end{minipage}
 
@@ -115,32 +115,32 @@ Deutlich in Abbildung \ref{fig:003_mem_usage_8200mb_limit_Cgroup_Pages_RDY_FOR_U
 
 Eine mögliche Antwort ist das Paging. Beim Paging werden allokierte, aber aktuell nicht verwendete Memory-Pages vom Arbeitsspeicher auf den Massenspeicher geladen. In Abbildung \ref{fig:003_mem_usage_8200mb_limit_Cgroup_Pages_RDY_FOR_USE} ist nach \SI{8200}{\mega\byte} die Trennung zwischen der gelben Linie (Memory-Page) und der grünen Linie (Cgroup) zu erkennen. Zu diesem Zeitpunkt hat das Betriebssystem mit dem Paging begonnen und lädt von dem Prozess allokierte Pages in den Massenspeicher. Die tatsächliche Menge an Arbeitsspeicher, der von der Cgroup auf der Hardware allokiert ist, bleibt gleich. Die gelbe Linie zeigt die Summe aller vom Prozess allokierten Memory-Pages, folglich auch den auf den Massenspeicher ausgelagerten Anteil. Die Steigung der gelben Linie ist durch die erhöhten Anforderungen an das I/O-System, was das Paging zu verantworten hat, zu erklären. Deshalb verringert sich die Allokationsrate beim Überschreiten des Limits. Der Überlauf von ca. \SI{2}{\giga\byte} stimmt mit dem \SI{2}{\giga\byte} Paging-Limit überein.
 
-\subparagraph{Test03,5}
+\subparagraph{Test04}
 Zur Abklärung und Überprüfung des Paging-Limits empfiehlt es sich, den Test01  zu wiederholen und zusätzlich die Memory-Pages zu betrachten.
 
-\subparagraph{Erwartungshaltung Test03,5}
+\subparagraph{Erwartungshaltung Test04}
 Es wurden ca. \SI{14000}{\mega\byte} beim ersten Testdurchlauf allokiert. Mit dem zusätzlichen Paging-Limit von \SI{2}{\giga\byte} sind die Memory-Pages auf ca. \SI{16000}{\mega\byte} zu schätzen. Ein identischer Cgroup Graph wird nicht erwartet, da der Arbeitsspeicherverbrauch des Betriebssystems von mehreren Faktoren abhängt. Doch der Unterschied zwischen dem Speicherverbrauch der Cgroup und den Memory-Pages sollte bei etwa \SI{2}{\giga\byte} liegen. 
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/001,5_mem_usage_No_Limit_Cgroup_Pages_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages ohne Limit}
+	\captionof{figure}[Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages ohne Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages ohne Limit}
 	\label{fig:001,5_mem_usage_No_Limit_Cgroup_Pages_RDY_FOR_USE.png}
 \end{minipage}
 
-\subparagraph{Ergebnis Test03,5}
+\subparagraph{Ergebnis Test04}
 In Abbildung \ref{fig:001,5_mem_usage_No_Limit_Cgroup_Pages_RDY_FOR_USE.png} sind die \SI{2}{\giga\byte} Unterschied zwischen dem Speicherverbrauch der Cgroup und den Memory-Pages offensichtlich nicht erreicht worden, was mehrere Gründe haben kann. Möglich ist eine zusätzliche Speicheranforderung des Betriebssystems, während der Prozess in der Paging-Phase war und zum früheren Absturz geführt hat. Auf diesen Effekt wird im Rahmen dieser Arbeit nicht genauer eingegangen.
 
 
 
-\subparagraph{Test04}
+\subparagraph{Test05}
 In einem weiteren Schritt wird nun ein Container erstellt, der für eine gewisse Zeitspanne läuft. Das in Listing \ref{01mem} gezeigte Programm wird so modifiziert, dass das gesetzte Limit knapp überschritten wird und ist in Listing \ref{02mem} zu sehen. 
 
 \vspace{1em}
 \lstinputlisting[caption=malloc()-Befehl \SI{2200000}{mal}, label=02mem, basicstyle=\ttfamily\scriptsize]{code/02mem.txt}
 
-\subparagraph{Erwartungshaltung Test04}
+\subparagraph{Erwartungshaltung Test05}
 Nachdem der malloc() Befehl jetzt \SI{2200000}{mal} ausgeführt wird, sollte der Speicherverbrauch der Memory-Pages nicht über \SI{8600}{\mega\byte} steigen und \SI{60}{\second} diesen Wert halten.
 
 
@@ -156,14 +156,14 @@ Nachdem der malloc() Befehl jetzt \SI{2200000}{mal} ausgeführt wird, sollte der
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/004_mem_usage_8200mb_limit_Container01_Basis_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{\SI{2200000}{mal} malloc(), \SI{60}{\second} sleep(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit}
+	\captionof{figure}[\SI{2200000}{mal} malloc(), \SI{60}{\second} sleep(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit]{\SI{2200000}{mal} malloc(), \SI{60}{\second} sleep(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit}
 	\label{fig:004_mem_usage_8200mb_limit_Container01_Basis_RDY_FOR_USE}
 \end{minipage}
 
-\subparagraph{Ergebnis Test04}
+\subparagraph{Ergebnis Test05}
 Wie in Abbildung \ref{fig:004_mem_usage_8200mb_limit_Container01_Basis_RDY_FOR_USE} zu entnehmen, ist es möglich für einen längeren Zeitraum über das Limit hinaus Ressourcen zu allokieren. Durch die lange Ausführungszeit mit gleichbleibenden Ressourcen ist es jetzt möglich, den Einfluss von Containern untereinander zu untersuchen. Dieser Container wird von nun an als Container01 bezeichnet.
 
-\subparagraph{Test05}
+\subparagraph{Test06}
 Als Container02 wird im Folgenden der Container aus Test03 bezeichnet. Im Ablauf des folgenden Tests wird zuerst Container01 gestartet und während der Laufzeit wird Container02 ebenfalls eingeschaltet. Der Container02 wird zum besseren Verständnis in Abbildung \ref{fig:005_mem_usage_8200mb_limit_Container02_Basis_RDY_FOR_USE_FOCUS} nochmals mit der gleichen Zeitachse wie in Abbildung \ref{fig:004_mem_usage_8200mb_limit_Container01_Basis_RDY_FOR_USE} dargestellt. 
 
 
@@ -171,22 +171,22 @@ Als Container02 wird im Folgenden der Container aus Test03 bezeichnet. Im Ablauf
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/005_mem_usage_8200mb_limit_Container02_Basis_RDY_FOR_USE_FOCUS.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit, angepasste Zeitachse}
+	\captionof{figure}[Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit, angepasste Zeitachse]{Endlosschleife malloc(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit, angepasste Zeitachse}
 	\label{fig:005_mem_usage_8200mb_limit_Container02_Basis_RDY_FOR_USE_FOCUS}
 \end{minipage}
 
-\subparagraph{Erwartungshaltung Test05}
+\subparagraph{Erwartungshaltung Test06}
 Die verwendbaren Systemressourcen liegen nach Abbildung \ref{fig:001_mem_usage_No_Limit_Cgroup_RDY_FOR_USE} bei etwa \SI{14000}{\mega\byte}. Allein Container01 verwendet schon ca. \SI{8600}{\mega\byte} der gesamten Summe, was die Deckelung von Container02 auf \SI{8200}{\mega\byte} rein rechnerisch unnötig macht. Somit wird Container02 frühzeitig beendet. 
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/006_mem_usage_8200mb_limit_Container01_mit_ipact_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{\SI{2200000}{mal} malloc(), \SI{60}{\second} sleep(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit, frühzeitiger Abbruch}
+	\captionof{figure}[\SI{2200000}{mal} malloc(), \SI{60}{\second} sleep(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit, frühzeitiger Abbruch]{\SI{2200000}{mal} malloc(), \SI{60}{\second} sleep(), Speicherverbrauch einer Cgroup und Memory-Pages mit Limit, frühzeitiger Abbruch}
 	\label{fig:006_mem_usage_8200mb_limit_Container01_mit_ipact_RDY_FOR_USE}
 \end{minipage}
 
-\subparagraph{Ergebnis Test05}
+\subparagraph{Ergebnis Test06}
 In Abbildung \ref{fig:006_mem_usage_8200mb_limit_Container01_mit_ipact_RDY_FOR_USE} ist zu erkennen, dass Container01 nicht nach ca. \SI{63}{\second} geplant beendet wurde, sondern schon etwa nach ca. \SI{38}{\second}.
 
 Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE} zeigt beide Container mit einer gemeinsamen Zeitachse. Nach dem Start von Container02, als dieser ca. \SI{5100}{\mega\byte} Speicher allokiert hat, wird Container01 beendet. Container02 überschreitet das Limit von \SI{8200}{\mega\byte} nach ca. \SI{41}{\second} und wird nach ca. \SI{42,5}{\second} ebenfalls beendet.
@@ -195,9 +195,10 @@ Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FO
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container01 mit \SI{2200000}{mal} malloc(), \SI{60}{\second} sleep() und von Conteiner02 mit Endlosschleife malloc()}
+	\captionof{figure}[Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container01 mit \SI{2200000}{mal} malloc(), \SI{60}{\second} sleep() und von Conteiner02 mit Endlosschleife malloc()]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container01 mit \SI{2200000}{mal} malloc(), \SI{60}{\second} sleep() und von Conteiner02 mit Endlosschleife malloc()}
 	\label{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE}
 \end{minipage}
+\vspace{1em}
 
 Abbildung \ref{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS} zeigt den interessanten Teil aus Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE}. Am auffälligsten ist die Lücke (mit gestrichelten Linien gekennzeichnet) in der Mitte der Abbildung. Eine Lücke entsteht, wenn über mehrere Millisekunden keine Messwerte vom Skript erfasst werden können. In diesem Fall ist das auf eine Systemüberlastung zurück zu führen, welche durch die Überlastung des Arbeitsspeichers und die dadurch eingeleiteten Systemreaktionen entstanden ist. 
 
@@ -205,21 +206,21 @@ Abbildung \ref{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FO
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container01 mit \SI{2200000}{mal} malloc(), \SI{60}{\second} sleep() und von Conteiner02 mit Endlosschleife malloc(), Fokus}
+	\captionof{figure}[Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container01 mit \SI{2200000}{mal} malloc(), \SI{60}{\second} sleep() und von Conteiner02 mit Endlosschleife malloc(), Fokus]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container01 mit \SI{2200000}{mal} malloc(), \SI{60}{\second} sleep() und von Conteiner02 mit Endlosschleife malloc(), Fokus}
 	\label{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS}
 \end{minipage}
-
+\vspace{1em}
 
 
 Die blauen Linie zeigt den Speicherverbrauch der Cgroup von Container01 in Abbildung \ref{fig:008_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE_FOCUS}, bei der nach ca. \SI{38,5}{\second} ein Abwärtstrend zu erkennen ist. Zu diesem Zeitpunkt hat das Betriebssystem mit dem Paging begonnen und lädt von der Cgroup allokierte Pages in den Massenspeicher. Die tatsächliche Menge an Arbeitsspeicher, welchen die Cgroup allokiert, nimmt ab. Die rote Linie zeigt die Summe aller vom Prozess allokierten Memory-Pages, folglich auch den auf den Massenspeicher ausgelagerten Anteil. Der Verlauf der grünen Linie zeigt die Memory-Pages von Container02 und lässt sich durch folgende Annahme begründen. Wegen der erhöhten Anforderung an das I/O-System, welche das Paging zu verantworten hat, verringert sich die Allokationsrate. Nach dem Beenden von Container01 wird ebenfalls das Paging beendet. Dadurch verläuft die Steigung der Kurve von Container02 ähnlich wie nach dem Start des Prozesses. 
 
-\subparagraph{Test06}
+\subparagraph{Test07}
 Bisher wurden Container betrachtet, die sich nicht an das vorgegebene Limit gehalten haben. Im Folgenden gilt es zu zeigen, dass auch bei \glqq gutartigen\grqq{}  Containern, also Container welche sich immer unter dem vorgegebenen Limit befinden, ähnliche Effekte auftreten. Für den folgenden Testdurchlauf wird der in Listing \ref{03mem} gezeigte C-Code verwendet. Zuerst startet Container03, der den eben genannten C-Code ausführt. Während des \SI{60}{\second} sleep() startet Container04 ebenfalls mit dem in Container03 verwendeten Code.
 
 \vspace{1em}
-\lstinputlisting[caption=einfacher C-Code, label=03mem, basicstyle=\ttfamily\scriptsize]{code/03mem.txt}
+\lstinputlisting[caption=malloc()-Befehl \SI{2048000}{mal}, label=03mem, basicstyle=\ttfamily\scriptsize]{code/03mem.txt}
 
-\subparagraph{Erwartungshaltung Test06}
+\subparagraph{Erwartungshaltung Test07}
 Durch die Änderung auf \SI{2048000}{} Wiederholungen des malloc()-Befehls, wird Container03 bis ca. \SI{8000}{\mega\byte} Speicher allokieren. Nach dem Start von Container04 wird ein ähnlicher Graphenverlauf erwartet wie im vorherigen Test. Da das gesetzte Hard Limit bei \SI{8200}{\mega\byte} nicht überschritten wird, werden die Linien der Cgroup und der Memory-Pages von Container04 identisch über die Lebensdauer des Containers verlaufen.
 
 \[\mathrm{sizeof(int)} = \SI{4}{\byte}\]
@@ -232,18 +233,18 @@ Durch die Änderung auf \SI{2048000}{} Wiederholungen des malloc()-Befehls, wird
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container03 und Container04 mit \SI{2048000}{mal} malloc(), \SI{60}{\second} sleep()}
+	\captionof{figure}[Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container03 und Container04 mit \SI{2048000}{mal} malloc(), \SI{60}{\second} sleep()]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container03 und Container04 mit \SI{2048000}{mal} malloc(), \SI{60}{\second} sleep()}
 	\label{fig:009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE}
 \end{minipage}
 
-\subparagraph{Ergebnis Test06}
+\subparagraph{Ergebnis Test07}
 Die Graphen der Container03 und Container04 in Abbildung \ref{fig:009_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE} ist den Graphen der Container01 und Container02 in Abbildung \ref{fig:007_mem_usage_8200mb_limit_Container01_und_Container02_RDY_FOR_USE} sehr ähnlich. Betrachtet man in Abbildung \ref{fig:010_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE_Focu} die blaue und die grüne Linie fällt auf, dass das Betriebssystem nach ca. \SI{33}{\second} mit dem Paging angefangen hat und Einfluss auf die Cgroup beider Container nimmt.  
 
 \vspace{1em}
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=1\linewidth]{pics/010_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE_Focus.png}
-	\captionof{figure}[Speicher Verbrauch Cgroup 8200MB Limit]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container03 und Container04 mit \SI{2048000}{mal} malloc(), \SI{60}{\second} sleep(), Fokus}
+	\captionof{figure}[Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container03 und Container04 mit \SI{2048000}{mal} malloc(), \SI{60}{\second} sleep(), Fokus]{Speicherverbrauch einer Cgroup und Memory-Pages mit Limit von Container03 und Container04 mit \SI{2048000}{mal} malloc(), \SI{60}{\second} sleep(), Fokus}
 	\label{fig:010_mem_usage_8200mb_limit_Container03_undContainer04_RDY_FOR_USE_Focu}
 \end{minipage}
 \vspace{1em}
